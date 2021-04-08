@@ -127,7 +127,7 @@ public class A {
 	}
 	
 	
-	public void  GetRidOf50Relases( String percorso) throws IOException {
+	public String  GetRidOf50Relases( String percorso) throws IOException {
 		int lung; 
 		String line,data;
 		String[] s;
@@ -146,7 +146,9 @@ public class A {
 		line=linesFile.get(lung);
 		s=line.split(",");
 		data=s[3];
-		System.out.println(data);
+		
+		return data;
+		//System.out.println(data);
 	}
 	
 	
