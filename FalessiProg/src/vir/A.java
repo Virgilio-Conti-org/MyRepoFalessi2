@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class A {
         
-	
+	//metodo per associare una versione ad una classe java
 	public void Version_Javaclass_pair(String fileRes, String ProjectInfo, String FileCSVdest) throws IOException, ParseException{
 		int lung=0; 
 		String[] info= {"","","",""}; 
@@ -84,6 +84,7 @@ public class A {
 		System.out.print(" ok ");
 	}
 	
+	//metodo per ottere la data subito precedente rispetto ad una data di riferimento
 	public int DateBefore_Date(String MyDate, String[] Dates) throws ParseException {
 		
 		int lung; int i=0;
@@ -115,6 +116,7 @@ public class A {
 		return i-1;
 	}
 	
+	//metodo per creare un file csv 
 	public void CreateCSVfile(String path) throws FileNotFoundException {
 		
 		FileOutputStream fileW= new FileOutputStream(path);
@@ -126,7 +128,7 @@ public class A {
 		
 	}
 	
-	
+	//metodo che restituisce la data che permette di eliminare la metà delle releases 
 	public String  GetRidOf50Relases( String percorso) throws IOException {
 		int lung; 
 		String line,data;
@@ -151,6 +153,18 @@ public class A {
 		//System.out.println(data);
 	}
 	
-	
+	//metodo che conta quanti tickets di tipo bug ci sono in un progetto
+	public int NumberOfTicketsBug(String FilepathTicketsBug) throws IOException {
+		int count=0;
+		
+		FileReader fr=new FileReader(FilepathTicketsBug);
+		BufferedReader br=new BufferedReader(fr);
+		
+		while( br.readLine()  !=null ) {
+			count=count+1;
+		}
+		br.close();
+		return count;
+	}
 	
 }

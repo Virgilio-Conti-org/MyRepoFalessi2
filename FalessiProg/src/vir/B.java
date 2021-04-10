@@ -25,9 +25,14 @@ public class B {
 	//private final String bk="BOOKKEEPER-";
 	private final String zk="ZOOKEEPER-";
 	
-	public void GetFileName(String fileResult, String pathGitLog ) throws IOException {
+	//metodo per ottenere le classi java associate ai tickets Bug
+	public void GetFileNameJava(String fileResult, String pathGitLog ) throws IOException {
 		
-	  String ext=".java";String lineLog; String NameJavaClass;String ticket="";int lung;
+	  String ext=".java";
+	  String lineLog; 
+	  String NameJavaClass;
+	  String ticket="";
+	  int lung;
 	  
 	  FileReader fr=new FileReader(pathGitLog);
 	  BufferedReader br=new BufferedReader(fr);
@@ -53,7 +58,7 @@ public class B {
 	        
 		  
 		  while(   !((lineLog=br.readLine()).contains(ticket))   ) {
-			//ciclo per trovare il ticket bug
+			//ciclo per trovare il particolare ticket bug
 		  }
 		
 		  //System.out.println("* "+lineLog);
@@ -79,6 +84,8 @@ public class B {
 		
 	}
 	
+	
+	//metodo per associare una data ad un particolare ticket bug
 	public void Date_Tickets(String pathTicketsFile, String pathGitLog, String fileResult) throws IOException {
 		String lineLog; String data; String ticket; int lung;
 		
@@ -130,6 +137,7 @@ public class B {
 		
 	}
 	
+	// metodo per gestire la parte numerica variabile di un perticolare ticket bug
 	public String ZK_string_ticket(String s) {
 		String p; int lung_zk;int lung_s;int i=0;;int indice;
 		int diff=0;int indice2;

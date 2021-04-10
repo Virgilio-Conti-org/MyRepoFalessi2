@@ -4,7 +4,10 @@
 package vir;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,36 +25,53 @@ public class Proportion {
 
 	private String FV,OV,IV;
 	
-	public void Calculate_p(int fv, int ov) {
-		int p=0; int iv; int percentage=10;
+	//metodo che calcola il valore P secondo il metodo proportion 
+	public int Calculate_p(int fv, int ov,int iv,String FilePathTickectsBug) throws IOException {
+		int p=0;  int windowWidth;int nBugs;
+		A a=new A();
 		
+		nBugs=a.NumberOfTicketsBug(FilePathTickectsBug);
+		windowWidth=nBugs/100;  //numero di bugs che corrisponde a 1% dei bugs totali 
+				
 		
 		if(fv==ov) {
 			p=0;
+			return p;
 		}
 		
+		if(ov==1) {
+			p=1;
+			return p;
+		}
+		
+		p=(fv-iv)/(fv-ov);
+		return p;
 		
 	}
 	
-	public void Calculate_IV(int p,int fv, int ov) {
+	//metodo che calcola il valore Injected Version 
+	public int Calculate_IV(int p,int fv, int ov) {
 		int iv=0;
 		
 		iv=fv-(fv-ov)*p;
 		
-		//return iv;
+		return iv;
 		
 	}
 	
-	public void Get_FV_OV(String FileInfoTicketsBug, String FileInfoProject) throws IOException, ParseException {
+	// metodo per ottenere i valori di Fixed Version e Opening Version
+	public void Find_FV_OV(String FileInfoTicketsBug, String FileInfoProject, String FileDest) throws IOException, ParseException {
 		int lung;
 		String ResolutionDate; Date Res_date;
 		String CreatedDate; Date Created_date;
-		String DateLimit;  Date dateMax;                 //to get rid of 50% of the releases
+		String DateLimit;  Date dateMax;               //to get rid of 50% of the releases
 		String[] info= {"","","",""}; 
 		String lineFile;
 		A a=new A();
-		int IndexFixVersion, VersioneFix;
-		int IndexOpenVersion, VersioneOpen;
+		String VersioneFix;
+		String VersioneOpen;
+		int IndexFixVersion;
+		int IndexOpenVersion;
 		
 		Path path= Paths.get(FileInfoProject);		
 		List<String> TicketsBugs =Files.readAllLines(path);
@@ -62,7 +82,10 @@ public class Proportion {
 		
 		FileReader fr=new FileReader(FileInfoTicketsBug);
 		BufferedReader br=new BufferedReader(fr);
-	    
+		
+		FileWriter fw=new FileWriter(FileDest);
+		BufferedWriter bw=new BufferedWriter(fw);
+		
 		DateLimit=a.GetRidOf50Relases(FileInfoProject);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		dateMax=sdf.parse(DateLimit);
@@ -70,40 +93,43 @@ public class Proportion {
 	    for(int i=1;i<lung;i++) {
 			info=TicketsBugs.get(i).split(",");
 			Versions[i-1]=info[0];
-			DatesVersions[i-1]=info[3].substring(0, 10);
+			DatesVersions[i-1]=info[3].substring(0,10);
 			//System.out.println(Versions[i-1]+" "+DatesVersions[i-1]);
 		}//for
 	    
 	    
-	    
+	    String[] buffSlipt= {"","",""};
 		while( (lineFile=br.readLine() ) !=null ) {
-			   ResolutionDate=getResolutionDate(lineFile);
+			buffSlipt=lineFile.split(",");
+			   ResolutionDate=buffSlipt[1];              
 			   Res_date=sdf.parse(ResolutionDate);
 			   
-			   CreatedDate=getCreatedDate(lineFile);
+			   CreatedDate=buffSlipt[2];                 
 			   Created_date=sdf.parse(CreatedDate);
 			   
-			   if(Res_date.after(dateMax) || Created_date.after(dateMax)) {
+			   /*if(Res_date.after(dateMax) || Created_date.after(dateMax)) {
 				   continue;
-			   }
+			   }*/
 			   
 			   IndexFixVersion=a.DateBefore_Date(ResolutionDate, DatesVersions);
 			   IndexOpenVersion=a.DateBefore_Date(CreatedDate, DatesVersions);
 			   
-			   VersioneFix=Integer.parseInt( Versions[IndexFixVersion] );
-			   VersioneOpen=Integer.parseInt(Versions[IndexOpenVersion] );
-			   
-			   System.out.println("RD= "+ResolutionDate+" DateBef= "+DatesVersions[IndexFixVersion]+"  Ver= "+VersioneFix);
-			   System.out.println("CD= "+CreatedDate+" DateBef= "+DatesVersions[IndexOpenVersion]+"  Ver= "+VersioneOpen);
+			   VersioneFix= Versions[IndexFixVersion] ;
+			   VersioneOpen=Versions[IndexOpenVersion] ;
+		
+			   bw.write(lineFile+","+VersioneFix+","+VersioneOpen+"\n");
+			   bw.flush();
+			   //System.out.println("RD= "+ResolutionDate+" DateBef= "+DatesVersions[IndexFixVersion]+"  Ver= "+VersioneFix);
+			   //System.out.println("CD= "+CreatedDate+" DateBef= "+DatesVersions[IndexOpenVersion]+"  Ver= "+VersioneOpen);
 			   
 			   //System.out.println("RD= "+ResolutionDate+"  CD "+CreatedDate);
 			}
 	    
-	   
 	    br.close();
+	    bw.close();
 	}
 	
-	
+	/*//metodo per ottenere la resolution date di un tickect bug
 	  public String getResolutionDate(String Date) {
 		  String ResolutionDate;
 		  int index, offset=17;
@@ -115,6 +141,7 @@ public class Proportion {
 			
 	  }
 	  
+	//metodo per ottenere la created date di un tickect bug
 	  public String getCreatedDate(String Date) {
 		  String CreatedDate; 
           int index, offset=10;
@@ -123,5 +150,5 @@ public class Proportion {
 		  CreatedDate=Date.substring(index, index+10);
 		  
 		  return CreatedDate;
-	  }
+	  }*/
 }
