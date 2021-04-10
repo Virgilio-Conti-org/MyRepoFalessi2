@@ -5,7 +5,6 @@ package vir;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -129,26 +128,5 @@ public class Proportion {
 	    bw.close();
 	}
 	
-	/*//metodo per ottenere la resolution date di un tickect bug
-	  public String getResolutionDate(String Date) {
-		  String ResolutionDate;
-		  int index, offset=17;
-		  
-		  index=Date.indexOf("resolutiondate")+offset;
-		  ResolutionDate=Date.substring(index, index+10);
-		  
-		  return ResolutionDate;
-			
-	  }
-	  
-	//metodo per ottenere la created date di un tickect bug
-	  public String getCreatedDate(String Date) {
-		  String CreatedDate; 
-          int index, offset=10;
-		  
-		  index=Date.indexOf("created")+offset;
-		  CreatedDate=Date.substring(index, index+10);
-		  
-		  return CreatedDate;
-	  }*/
+	
 }
