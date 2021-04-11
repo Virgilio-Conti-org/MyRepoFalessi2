@@ -17,9 +17,9 @@ public class DB {
 	private String userID="USERID";
 	private String pws="PWS";
 	private String pathFileCredentials="D:\\Libri\\Università\\Falessi\\postgresSql\\CredenzialiPostrgres.txt";
-	private String urlDB_Zookeeper="jdbc:postgresql://localhost:5432/TickectBubDB";
+	private String urlDB_Zookeeper="jdbc:postgresql://localhost:5432/TickectBugDB";
 	private String urlBD_Bookeeper="jdbc:postgresql://localhost:5432/";
-	
+		
 	
 	private FileReader fr;
 	private BufferedReader br;
@@ -32,6 +32,7 @@ public class DB {
 		
 		user=getUserID();
 		password=getPws();
+		System.out.println(user+" / "+password);
 		Connection con= DriverManager.getConnection(urlDB_Zookeeper,user,password);
 		
 		return con;
@@ -42,6 +43,7 @@ public class DB {
 		
 		user=getUserID();
 		password=getPws();
+		
 		Connection con= DriverManager.getConnection(urlBD_Bookeeper,user,password);
 		
 		return con;
@@ -49,17 +51,20 @@ public class DB {
 	
 	
     public String getUserID() throws IOException{
-    	String user_id;
+    	String user_id="";
     	String temp;
     	String[] aux= {"",""};
     	fr=new FileReader(pathFileCredentials);
         br=new BufferedReader(fr);
         
         while( !(temp=br.readLine()).contains(userID) ) {
-        	aux=temp.split(regex);
+        	
+        	
         }
-        
+        aux=temp.split(regex);
+         
         user_id=aux[1];
+        //System.out.println(user_id);
 		return user_id;
 	}
 	
@@ -71,10 +76,12 @@ public class DB {
 	    String[] aux= {"",""};
 	    
         while(!(temp=br.readLine()).contains(pws)) {
-        	aux=temp.split(regex);
+        	
         }
-	    
+        
+        aux=temp.split(regex);
         password=aux[1];
+        //System.out.println(password);
 		return password;
 	}
 }
