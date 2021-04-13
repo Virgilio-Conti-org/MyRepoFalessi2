@@ -1,0 +1,7 @@
+organization=virgilio-conti-org
+projectKey=Virgilio-Conti-org_MyRepoFalessi2
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.19196
+dashboardUrl=https://sonarcloud.io/dashboard?id=Virgilio-Conti-org_MyRepoFalessi2
+ceTaskId=AXjLc4FNhhPfU3odwObv
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AXjLc4FNhhPfU3odwObv
