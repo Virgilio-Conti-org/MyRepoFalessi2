@@ -4,7 +4,6 @@
 package vir;
 
 import java.io.IOException;
-//import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 
@@ -21,19 +20,20 @@ public class ClassToExecute {
 	 * @throws SQLException 
 	 */
 	public static void main(String[] args) throws IOException, ParseException, SQLException {
-		//String InputCSV="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\InputCSV.csv";
-		//String ZOOKEEPERVersionInfo="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";
-		/*String FileResult="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\FileResult.txt";
-		A a=new A();
-		a.CreateCSVfile(InputCSV);
-	    a.Version_Javaclass_pair(FileResult,ZOOKEEPERVersionInfo,InputCSV);	*/
+		//int SelectorProject;  //1=bookeeper   2=zookeeper
+		String InputCSV="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\InputCSV.csv";
+		String ZOOKEEPERVersionInfo="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";
+		String FileResult="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\FileResult.txt";
+		FilesHandling fh=new FilesHandling();
+		fh.CreateCSVfile(InputCSV);
+	    fh.Version_Javaclass_pair(FileResult,ZOOKEEPERVersionInfo,InputCSV);	
 		
-		/*C c=new C();
-		//String FileInfoProject="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";		
+		FilesHandling3 fh3=new FilesHandling3();
+		//String ZOOKEEPERVersionInfo="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";		
 		String AffectedVersionsZookeperTickectsBug="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\AffectedVersionsZookeperTickectsBug.csv";
 		String TicketsBugWithAffectedVerANDdates="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\TicketsBugWithAffectedVerANDdates.txt";
-		c.Find_Versions_With_Dates_and_Associate_IndexVersion(AffectedVersionsZookeperTickectsBug, ZOOKEEPERVersionInfo,TicketsBugWithAffectedVerANDdates);
-		*/
+		fh3.Find_Versions_With_Dates_and_Associate_IndexVersion(AffectedVersionsZookeperTickectsBug, ZOOKEEPERVersionInfo,TicketsBugWithAffectedVerANDdates);
+		
 		
 		
 		/*Proportion p=new Proportion();

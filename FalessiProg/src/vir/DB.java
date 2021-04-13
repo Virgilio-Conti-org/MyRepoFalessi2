@@ -19,25 +19,25 @@ public class DB {
 	private String pathFileCredentials="D:\\Libri\\Università\\Falessi\\postgresSql\\CredenzialiPostrgres.txt";
 	private String urlDB_Zookeeper="jdbc:postgresql://localhost:5432/TickectBugDB";
 	private String urlBD_Bookeeper="jdbc:postgresql://localhost:5432/";
-		
-	
+			
 	private FileReader fr;
 	private BufferedReader br;
 	
 	private String regex=":";
 	
+	//metodo per la connessione verso il database con i dati di Zookeeper
 	public Connection connectToDB_TickectBugZookeeper() throws SQLException, IOException {
 		String user,password;
-		
-		
+			
 		user=getUserID();
 		password=getPws();
-		System.out.println(user+" / "+password);
+		//System.out.println(user+" / "+password);
 		Connection con= DriverManager.getConnection(urlDB_Zookeeper,user,password);
 		
 		return con;
 	}
 	
+	//metodo per la connessione verso il database con i dati di Bookkeeper
 	public Connection  connectToDB_TickectBugBookkeeper() throws SQLException, IOException {
 		String user,password;
 		
@@ -49,7 +49,7 @@ public class DB {
 		return con;
 	}
 	
-	
+	//metodo per reperire user id da file
     public String getUserID() throws IOException{
     	String user_id="";
     	String temp;
@@ -68,6 +68,7 @@ public class DB {
 		return user_id;
 	}
 	
+  //metodo per reperire password da file
 	public String getPws() throws IOException{
 		String password;
 		fr=new FileReader(pathFileCredentials);

@@ -22,13 +22,14 @@ public class FilesHandling2 {
 	private final String M="M";
 	private final String commit="commit";
 	private final String Date="Date";
-	//private final String bk="BOOKKEEPER-";
+	private final String bk="BOOKKEEPER-";
 	private final String zk="ZOOKEEPER-";
+	private String projectChoosen="";
 	
 	//metodo per ottenere le classi java associate ai tickets Bug
-	public void GetFileNameJava(String fileResult, String pathGitLog ) throws IOException {
+	public void GetFileNameJava(String fileResult, String pathGitLog,int SelectorProject ) throws IOException {
 		
-	  String ext=".java";
+	  String extensionJava=".java";
 	  String lineLog; 
 	  String NameJavaClass;
 	  String ticket="";
@@ -45,6 +46,12 @@ public class FilesHandling2 {
 	  BufferedWriter bwRes=new BufferedWriter(fwRes);
 		
 	  
+	  if(SelectorProject==1) {
+		   projectChoosen=zk;
+	  }
+	  if(SelectorProject==2) {
+		   projectChoosen=bk;
+	  }
 	  
 	  for(int i=0;i<lung;i++) {
 		  ticket=linesTicketsBugs.get(i);
@@ -63,9 +70,9 @@ public class FilesHandling2 {
 		
 		  //System.out.println("* "+lineLog);
 		  lineLog=br.readLine();
-          while(  !(lineLog.startsWith(commit)  || lineLog.contains(zk))  ) {
+          while(  !(lineLog.startsWith(commit)  || lineLog.contains(projectChoosen))  ) {
 			
-            if(lineLog.startsWith(M) && lineLog.contains(ext)) {
+            if(lineLog.startsWith(M) && lineLog.contains(extensionJava)) {
         	  NameJavaClass=lineLog;
        	      bwRes.write(NameJavaClass+"\n");
        	      bwRes.flush();
@@ -86,7 +93,7 @@ public class FilesHandling2 {
 	
 	
 	//metodo per associare una data ad un particolare ticket bug
-	public void Date_Tickets(String pathTicketsFile, String pathGitLog, String fileResult) throws IOException {
+	public void Date_Tickets(String pathTicketsFile, String pathGitLog, String fileResult,int SelectorProject) throws IOException {
 		String lineLog; String data; String ticket; int lung;
 		
 		
@@ -101,6 +108,14 @@ public class FilesHandling2 {
 		FileWriter fwRes=new FileWriter(fileResult);
 		BufferedWriter bwRes=new BufferedWriter(fwRes);
 		
+		if(SelectorProject==1) {
+			   projectChoosen=zk;
+		  }
+		  if(SelectorProject==2) {
+			   projectChoosen=bk;
+		  }
+		
+		
 		while( (lineLog=br.readLine() ) !=null ) {
 			
 			if (lineLog.startsWith(Date)) {
@@ -111,9 +126,9 @@ public class FilesHandling2 {
 				
 			}
 					
-			if (lineLog.contains( zk ) ) {
+			if (lineLog.contains( projectChoosen ) ) {
 				
-				lineLog=ZK_string_ticket(lineLog);	
+				lineLog=Project_string_ticket(lineLog);	
 				//System.out.println(" ** "+lineLog);
 				
 				for(int i=0;i<lung;i++) {
@@ -138,14 +153,14 @@ public class FilesHandling2 {
 	}
 	
 	// metodo per gestire la parte numerica variabile di un perticolare ticket bug
-	public String ZK_string_ticket(String s) {
+	public String Project_string_ticket(String s) {
 		String p; int lung_zk;int lung_s;int i=0;;int indice;
 		int diff=0;int indice2;
 		
-		lung_zk=zk.length();
+		lung_zk=projectChoosen.length();
 		lung_s=s.length();
 		
-		indice=s.indexOf(zk);
+		indice=s.indexOf(projectChoosen);
 		
 		indice2=indice+lung_zk;
 		
@@ -153,7 +168,7 @@ public class FilesHandling2 {
 			
 			diff=lung_s-indice2;
 			p=s.substring(indice2, indice2+diff);
-			return p=zk+p;
+			return p=projectChoosen+p;
 		}
 		else {
 						
@@ -166,7 +181,7 @@ public class FilesHandling2 {
 			}
 		}
 		
-		p=zk+p.substring(0, i);;
+		p=projectChoosen+p.substring(0, i);;
 		
 		return p;
 	}

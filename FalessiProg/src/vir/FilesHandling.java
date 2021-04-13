@@ -28,14 +28,14 @@ public class FilesHandling {
         
 	//metodo per associare una versione ad una classe java
 	public void Version_Javaclass_pair(String fileRes, String ProjectInfo, String FileCSVdest) throws IOException, ParseException{
-		int lung=0; 
+		
 		String[] info= {"","","",""}; 
 		String lineFileRes;
-		String DataJavaClass="/"; 
-		int IndexDataJavaClassVersion;
+		String DataJavaClass="/"; 	
 		String Version;
 		String NameJavaClass; 
-		
+		int IndexDataJavaClassVersion;
+		int lung=0; 
 		
 		FileReader fr=new FileReader(fileRes);
 		BufferedReader br=new BufferedReader(fr);
@@ -81,13 +81,14 @@ public class FilesHandling {
 			 
 		br.close();	
 		bwCSV.close();			
-		System.out.print(" ok ");
+		//System.out.print(" ok ");
 	}
 	
 	//metodo per ottere la data subito precedente rispetto ad una data di riferimento
 	public int DateBefore_Date(String MyDate, String[] Dates) throws ParseException {
 		
-		int lung; int i=0;
+		int lung; 
+		int i=0;
 		
 		lung=Dates.length;
 		

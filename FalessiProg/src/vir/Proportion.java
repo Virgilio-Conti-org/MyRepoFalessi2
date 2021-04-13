@@ -27,6 +27,11 @@ public class Proportion {
 	
 	//metodo che calcola il valore P secondo il metodo proportion 
 	public int Calculate_p(int fv, int ov,int iv) throws IOException {
+	
+	//paramertri	
+	//fv=fixVersion ov=openigVersion  iv=InjectedVersion	
+		
+	//intero che conterrà il valore proportion calcolato
 		int p=0; 
 		
 		
@@ -40,6 +45,7 @@ public class Proportion {
 			return p;
 		}
 		
+		//formula per il calcolo del valore proportion
 		p=(fv-iv)/(fv-ov);
 		return p;
 		
@@ -47,8 +53,13 @@ public class Proportion {
 	
 	//metodo che calcola il valore Injected Version 
 	public int Calculate_IV(int p,int fv, int ov) {
+		//paramertri	
+		//p=valore proportion fv=fixVersion ov=openigVersion  
+		
+		//intero che conterrà il valore proportion calcolato
 		int iv=0;
 		
+		//formula per il calcolo della InjectedVersion
 		iv=fv-(fv-ov)*p;
 		
 		return iv;
@@ -57,17 +68,18 @@ public class Proportion {
 	
 	// metodo per ottenere i valori di Fixed Version e Opening Version
 	public void Find_FV_OV(String FileInfoTicketsBug, String FileInfoProject, String FileDest) throws IOException, ParseException {
-		int lung;
+		
 		String ResolutionDate; //Date Res_date;
 		String CreatedDate; //Date Created_date;
 		//String DateLimit;  //Date dateMax;               //to get rid of 50% of the releases
 		String[] info= {"","","",""}; 
 		String lineFile;
-		FilesHandling a=new FilesHandling();
+		FilesHandling fh=new FilesHandling();
 		String VersioneFix;
 		String VersioneOpen;
 		int IndexFixVersion;
 		int IndexOpenVersion;
+		int lung;
 		
 		Path path= Paths.get(FileInfoProject);		
 		List<String> TicketsBugs =Files.readAllLines(path);
@@ -107,8 +119,8 @@ public class Proportion {
 				   continue;
 			   }*/
 			   
-			   IndexFixVersion=a.DateBefore_Date(ResolutionDate, DatesVersions);
-			   IndexOpenVersion=a.DateBefore_Date(CreatedDate, DatesVersions);
+			   IndexFixVersion=fh.DateBefore_Date(ResolutionDate, DatesVersions);
+			   IndexOpenVersion=fh.DateBefore_Date(CreatedDate, DatesVersions);
 			   
 			   VersioneFix= Versions[IndexFixVersion] ;
 			   VersioneOpen=Versions[IndexOpenVersion] ;
