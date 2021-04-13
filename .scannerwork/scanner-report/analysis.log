@@ -52,6 +52,7 @@ Global server settings:
 Project server settings:
 Project scanner properties:
   - sonar.host.url=http://sonarcloud.io
+  - sonar.java.binaries=D:/Libri/Università/Falessi/Repo/RepoFalessi2/MyRepoFalessi2/FalessiProg/bin/vir/ClassToExecute.class,D:/Libri/Università/Falessi/Repo/RepoFalessi2/MyRepoFalessi2/FalessiProg/bin/vir/ConstantsAndPaths.class,D:/Libri/Università/Falessi/Repo/RepoFalessi2/MyRepoFalessi2/FalessiProg/bin/vir/DB.class,D:/Libri/Università/Falessi/Repo/RepoFalessi2/MyRepoFalessi2/FalessiProg/bin/vir/FilesHandling.class,D:/Libri/Università/Falessi/Repo/RepoFalessi2/MyRepoFalessi2/FalessiProg/bin/vir/FilesHandling2.class,D:/Libri/Università/Falessi/Repo/RepoFalessi2/MyRepoFalessi2/FalessiProg/bin/vir/FilesHandling3.class,D:/Libri/Università/Falessi/Repo/RepoFalessi2/MyRepoFalessi2/FalessiProg/bin/vir/Proportion.class,D:/Libri/Università/Falessi/Repo/RepoFalessi2/MyRepoFalessi2/FalessiProg/bin/vir/Proportion2.class
   - sonar.organization=virgilio-conti-org
   - sonar.projectBaseDir=D:\Libri\Università\Falessi\Repo\RepoFalessi2\MyRepoFalessi2
   - sonar.projectKey=Virgilio-Conti-org_MyRepoFalessi2
