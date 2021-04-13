@@ -1,4 +1,10 @@
 language: java
 jdk: openjdk11
-install: true
-script: mvn clean test
+
+addons:
+ sonarcloud: 
+  organization: "virgilio-conti-org"
+  token: 7f76479bf923281db7ce6657ec1a36945475722c
+script: 
+- ant build 
+- sonar-scanner
