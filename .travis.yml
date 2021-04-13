@@ -2,6 +2,6 @@ language: java
 jdk: 
 -openjdk11
 
-install: true
-script: ./mvnw clean install
+script: 
+-ant build
 
