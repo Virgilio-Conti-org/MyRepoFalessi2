@@ -19,19 +19,19 @@ import java.util.List;
  */
 public class FilesHandling2 {
     
-	private final String M="M";
-	private final String commit="commit";
-	private final String Date="Date";
-	private final String bk="BOOKKEEPER-";
-	private final String zk="ZOOKEEPER-";
+	private final String m="M";
+	private static final String commit="commit";
+	private final String date="Date";
+	private static final String bk="BOOKKEEPER-";
+	private static final String zk="ZOOKEEPER-";
 	private String projectChoosen="";
 	
 	//metodo per ottenere le classi java associate ai tickets Bug
-	public void GetFileNameJava(String fileResult, String pathGitLog,int SelectorProject ) throws IOException {
+	public void getFileNameJava(String fileResult, String pathGitLog,int selectorProject ) throws IOException {
 		
 	  String extensionJava=".java";
 	  String lineLog; 
-	  String NameJavaClass;
+	  String nameJavaClass;
 	  String ticket="";
 	  int lung;
 	  
@@ -46,37 +46,38 @@ public class FilesHandling2 {
 	  BufferedWriter bwRes=new BufferedWriter(fwRes);
 		
 	  
-	  if(SelectorProject==1) {
+	  if(selectorProject==1) {
 		   projectChoosen=zk;
 	  }
-	  if(SelectorProject==2) {
+	  if(selectorProject==2) {
 		   projectChoosen=bk;
 	  }
 	  
+	 try { 
 	  for(int i=0;i<lung;i++) {
 		  ticket=linesTicketsBugs.get(i);
 		  
 		  bwRes.write(ticket+"\n");
    	      bwRes.flush();
    	      
-		  if(ticket.startsWith(Date) ) {
+		  if(ticket.startsWith(date) ) {
 			  continue;
 		  }
 	        
 		  
-		  while(   !((lineLog=br.readLine()).contains(ticket))   ) {
+		  while(   !(br.readLine().contains(ticket)   ) ) {
 			//ciclo per trovare il particolare ticket bug
 		  }
 		
-		  //System.out.println("* "+lineLog);
+		
 		  lineLog=br.readLine();
           while(  !(lineLog.startsWith(commit)  || lineLog.contains(projectChoosen))  ) {
 			
-            if(lineLog.startsWith(M) && lineLog.contains(extensionJava)) {
-        	  NameJavaClass=lineLog;
-       	      bwRes.write(NameJavaClass+"\n");
+            if(lineLog.startsWith(m) && lineLog.contains(extensionJava)) {
+        	  nameJavaClass=lineLog;
+       	      bwRes.write(nameJavaClass+"\n");
        	      bwRes.flush();
-       	      //System.out.println(NameJavaClass);
+       	      
        	      
             } 
             lineLog=br.readLine();
@@ -84,17 +85,22 @@ public class FilesHandling2 {
 		 }//while
 		     
 	  }//for   
-	  
-	  
+	 }//try  
+	 
+	 finally {
 		br.close();
 		bwRes.close();
-		
-	}
+	 }
+	 
+}//fine metodo
 	
 	
 	//metodo per associare una data ad un particolare ticket bug
-	public void Date_Tickets(String pathTicketsFile, String pathGitLog, String fileResult,int SelectorProject) throws IOException {
-		String lineLog; String data; String ticket; int lung;
+	public void dateTickets(String pathTicketsFile, String pathGitLog, String fileResult,int selectorProject) throws IOException {
+		String lineLog; 
+		String data; 
+		String ticket; 
+		int lung;
 		
 		
 		Path path= Paths.get(pathTicketsFile);		
@@ -108,19 +114,19 @@ public class FilesHandling2 {
 		FileWriter fwRes=new FileWriter(fileResult);
 		BufferedWriter bwRes=new BufferedWriter(fwRes);
 		
-		if(SelectorProject==1) {
+		if(selectorProject==1) {
 			   projectChoosen=zk;
 		  }
-		  if(SelectorProject==2) {
+		  if(selectorProject==2) {
 			   projectChoosen=bk;
 		  }
 		
-		
+	try {	
 		while( (lineLog=br.readLine() ) !=null ) {
 			
-			if (lineLog.startsWith(Date)) {
+			if (lineLog.startsWith(date)) {
 				data=lineLog;
-				//System.out.println(data);
+				
 				bwRes.write(data+"\n");
 				bwRes.flush();
 				
@@ -128,15 +134,15 @@ public class FilesHandling2 {
 					
 			if (lineLog.contains( projectChoosen ) ) {
 				
-				lineLog=Project_string_ticket(lineLog);	
-				//System.out.println(" ** "+lineLog);
+				lineLog=projectStringTicket(lineLog);	
+				
 				
 				for(int i=0;i<lung;i++) {
 			  
 				  String particularTicket = linesTicketsFile.get(i);	
 				  if( lineLog.equals( particularTicket )  ) {
 					  ticket=particularTicket;					  
-					  //System.out.println("  "+ticket);
+					 
 					  bwRes.write(ticket+"\n");	
 					  bwRes.flush();
 				  }
@@ -146,29 +152,38 @@ public class FilesHandling2 {
 			}//if
 								
 		}//while
+	}//try
 	
-		br.close();
+    finally {
+    	br.close();
 		bwRes.close();
+	}	
 		
-	}
+		
+}//fine metodo
 	
 	// metodo per gestire la parte numerica variabile di un perticolare ticket bug
-	public String Project_string_ticket(String s) {
-		String p; int lung_zk;int lung_s;int i=0;;int indice;
-		int diff=0;int indice2;
+	public String projectStringTicket(String s) {
+		String p;
+		int lungZK;
+		int lungS;
+		int i=0;
+		int indice;
+		int indice2;
+		int diff=0;
 		
-		lung_zk=projectChoosen.length();
-		lung_s=s.length();
+		lungZK=projectChoosen.length();
+		lungS=s.length();
 		
 		indice=s.indexOf(projectChoosen);
 		
-		indice2=indice+lung_zk;
+		indice2=indice+lungZK;
 		
-		if(indice2>lung_s-4) {
+		if(indice2>lungS-4) {
 			
-			diff=lung_s-indice2;
+			diff=lungS-indice2;
 			p=s.substring(indice2, indice2+diff);
-			return p=projectChoosen+p;
+			return projectChoosen+p;
 		}
 		else {
 						
@@ -181,11 +196,9 @@ public class FilesHandling2 {
 			}
 		}
 		
-		p=projectChoosen+p.substring(0, i);;
-		
-		return p;
+		return projectChoosen+p.substring(0, i);
+				
 	}
-	
 	
 
 

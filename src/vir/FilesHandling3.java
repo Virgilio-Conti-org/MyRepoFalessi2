@@ -23,56 +23,55 @@ public class FilesHandling3 {
 	
 	//metodo che trova le affected versions che hanno una data e poi associa  
 	//a queste l'indice numerico corrispondente
-	public void Find_Versions_With_Dates_and_Associate_IndexVersion(String PathFileCSV, String FileInfoProject,String Filedest) throws IOException {
-		String[] info= {"","","",""};
-		String LineFileCSV;
+	public void findVersionsWithDatesAndAssociateIndexVersion(String pathFileCSV, String fileInfoProject,String filedest) throws IOException {
+		String[] info;
+		String lineFileCSV;
 		int lung;
-		int i,j;
+		int i;
+		int j;
 		int versioneTrovata=0;  //0=versione non trovata  1=versione trovata
 		
-		FileReader frCSV=new FileReader(PathFileCSV);
+		FileReader frCSV=new FileReader(pathFileCSV);
 		BufferedReader brCSV=new BufferedReader(frCSV);
 		
 		
-		FileWriter fwDest=new FileWriter(Filedest);
+		FileWriter fwDest=new FileWriter(filedest);
 		BufferedWriter bwDest=new BufferedWriter(fwDest);
 		
-		Path path= Paths.get(FileInfoProject);		
+		Path path= Paths.get(fileInfoProject);		
 		List<String> linesTicketsFile =Files.readAllLines(path);
 		lung=linesTicketsFile.size();
 		
-		//String[] DatesVersions = new String[lung-1];
-		String[] Versions = new String[lung-1];
-		String[] VersionName = new String[lung-1];
-		String[] BuffSplit;
+		String[] versions = new String[lung-1];
+		String[] versionName = new String[lung-1];
+		String[] buffSplit;
 		
 		for( i=1;i<lung;i++) {
 			info=linesTicketsFile.get(i).split(",");
-			Versions[i-1]=info[0];
-			VersionName[i-1]=info[2];
-			//DatesVersions[i-1]=info[3];			
-			//System.out.println(Versions[i-1]+" "+DatesVersions[i-1]);
+			versions[i-1]=info[0];
+			versionName[i-1]=info[2];
+			
 		}//for
 		
-		 LineFileCSV=brCSV.readLine();//get rid of first line
-		 while( (LineFileCSV=brCSV.readLine() ) !=null ) {
+
+		
+		try {
+		 brCSV.readLine();//get rid of first line
+		 while( (lineFileCSV=brCSV.readLine() ) !=null ) {
 				
-			 BuffSplit=LineFileCSV.split(",");
-			 int lungBS=BuffSplit.length;
-			 //System.out.println("bf "+BuffSplit[0]+"  bf lung "+BuffSplit.length);
+			 buffSplit=lineFileCSV.split(",");
+			 int lungBS=buffSplit.length;
+			 
 				for(i=0;i<lungBS;i++) {
-					//System.out.println("i= "+i);
+					
 					for(j=0;j<lung-1;j++) {
-						//String bf=BuffSplit[index+i];
-						//String v=VersionName[j];
-						//System.out.println("bf "+BuffSplit[0]+"  bf lung "+BuffSplit.length);
-						//System.out.println("j= "+j+" lung "+VersionName.length);
-						if(BuffSplit[i].equals(VersionName[j])) {
+						
+						if(buffSplit[i].equals(versionName[j])) {
 							
 							versioneTrovata=1;
-							LineFileCSV=BuffSplit[0]+","+VersionName[j]+","+Versions[j];						
+							lineFileCSV=buffSplit[0]+","+versionName[j]+","+versions[j];						
 							
-							bwDest.write(LineFileCSV+"\n");
+							bwDest.write(lineFileCSV+"\n");
 							bwDest.flush();
 							break;
 						}
@@ -85,10 +84,13 @@ public class FilesHandling3 {
 				}//for
 					
 	          }//while
-	
-		    brCSV.close();
-			bwDest.close(); 
-		    
+		}//try
 		
-	}
+		finally {
+			brCSV.close();
+			bwDest.close(); 
+		}
+		    
+		    		
+	}//fine metodo
 }

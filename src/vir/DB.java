@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 
+
 /**
  * @author Virgilio
  *
@@ -16,45 +17,52 @@ public class DB {
     
 	private String userID="USERID";
 	private String pws="PWS";
-	private String pathFileCredentials="D:\\Libri\\Università\\Falessi\\postgresSql\\CredenzialiPostrgres.txt";
-	private String urlDB_Zookeeper="jdbc:postgresql://localhost:5432/TickectBugDB";
-	private String urlBD_Bookeeper="jdbc:postgresql://localhost:5432/";
+	
+	private String urlDBzookeeper="jdbc:postgresql://localhost:5432/TickectBugDB";
+	private String urlDBbookeeper="jdbc:postgresql://localhost:5432/";
 			
 	private FileReader fr;
 	private BufferedReader br;
 	
 	private String regex=":";
+
+	private ConstantsAndPaths constants;	
 	
 	//metodo per la connessione verso il database con i dati di Zookeeper
-	public Connection connectToDB_TickectBugZookeeper() throws SQLException, IOException {
-		String user,password;
+	public Connection connectToDBtickectBugZookeeper() throws SQLException, IOException {
+		String user;
+		String password;
 			
 		user=getUserID();
 		password=getPws();
-		//System.out.println(user+" / "+password);
-		Connection con= DriverManager.getConnection(urlDB_Zookeeper,user,password);
+	
+		return  DriverManager.getConnection(urlDBzookeeper,user,password);
 		
-		return con;
+		 
 	}
 	
 	//metodo per la connessione verso il database con i dati di Bookkeeper
-	public Connection  connectToDB_TickectBugBookkeeper() throws SQLException, IOException {
-		String user,password;
+	public Connection  connectToDBtickectBugBookkeeper() throws SQLException, IOException {
+		String user;
+		String password;
 		
 		user=getUserID();
 		password=getPws();
 		
-		Connection con= DriverManager.getConnection(urlBD_Bookeeper,user,password);
+		Connection con= DriverManager.getConnection(urlDBbookeeper,user,password);
 		
 		return con;
 	}
 	
 	//metodo per reperire user id da file
     public String getUserID() throws IOException{
-    	String user_id="";
+    	String userid="";
     	String temp;
-    	String[] aux= {"",""};
-    	fr=new FileReader(pathFileCredentials);
+    	String[] aux;
+    	
+    	constants=new ConstantsAndPaths();
+    	
+    	fr=new FileReader(constants.getPathFileCredentials());
         br=new BufferedReader(fr);
         
         while( !(temp=br.readLine()).contains(userID) ) {
@@ -63,18 +71,21 @@ public class DB {
         }
         aux=temp.split(regex);
          
-        user_id=aux[1];
-        //System.out.println(user_id);
-		return user_id;
+        userid=aux[1];
+ 
+		return userid;
 	}
 	
   //metodo per reperire password da file
 	public String getPws() throws IOException{
 		String password;
-		fr=new FileReader(pathFileCredentials);
+		
+		constants=new ConstantsAndPaths();	
+		
+		fr=new FileReader(constants.getPathFileCredentials());
 	    br=new BufferedReader(fr);
 	    String temp;
-	    String[] aux= {"",""};
+	    String[] aux;
 	    
         while(!(temp=br.readLine()).contains(pws)) {
         	
@@ -82,7 +93,10 @@ public class DB {
         
         aux=temp.split(regex);
         password=aux[1];
-        //System.out.println(password);
+      
 		return password;
 	}
+	
+	
+	
 }

@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-//import java.sql.Statement;
+
 
 /**
  * @author Virgilio
@@ -16,17 +16,25 @@ import java.sql.SQLException;
  */
 public class Proportion2 {
 
-	private int FV,OV,IV;
+	private int fixV;
+	private int openV;
+	private int injectedV;
 	private DB db;
 	
-	public void Calculate_P_Tickets_Without_Affected_Version() throws SQLException, IOException{
+	public void calculatePticketsWithoutAffectedVersion() throws SQLException, IOException{
 		Connection con;
-		PreparedStatement stat, stat2,statUpdate;
-		ResultSet rsTicketsNOaffectedVerion,rsTicketsWITHaffectedVerion;
-		int movWindow=0, count=0;
-		int P=0;
+		PreparedStatement stat;
+		PreparedStatement stat2;
+		PreparedStatement statUpdate;
+		
+		ResultSet rsTicketsNOaffectedVerion;
+		ResultSet rsTicketsWITHaffectedVerion;
+		int movWindow=0;
+		int count=0;
+		int p=0;
+		
 		Proportion  proportion1=new Proportion();
-		String TicketID;
+		String ticketID;
 		
 		String queryTicketsNOaffectedVerion="SELECT * " + 
 				"FROM \"Tickect_FV_OV\" as t_FV_OV" + 
@@ -44,7 +52,7 @@ public class Proportion2 {
 		
 		
 		db=new DB();
-		con=db.connectToDB_TickectBugZookeeper();
+		con=db.connectToDBtickectBugZookeeper();
 		stat=con.prepareStatement(queryTicketsNOaffectedVerion);
 		stat2=con.prepareStatement(queryTicketsWITHaffectedVerion);
 		
@@ -53,22 +61,22 @@ public class Proportion2 {
 		
 		while( rsTicketsNOaffectedVerion.next() ) {
 			
-		    TicketID = rsTicketsNOaffectedVerion.getString("TicketBugID");
+		    ticketID = rsTicketsNOaffectedVerion.getString("TicketBugID");
 		    
-			FV=rsTicketsNOaffectedVerion.getInt("FV");
-			OV=rsTicketsNOaffectedVerion.getInt("OP");
+			fixV=rsTicketsNOaffectedVerion.getInt("FV");
+			openV=rsTicketsNOaffectedVerion.getInt("OP");
 							
 			while(rsTicketsWITHaffectedVerion.next() && count<movWindow) {
-				P=P+rsTicketsWITHaffectedVerion.getInt("ProportionValue");
+				p=p+rsTicketsWITHaffectedVerion.getInt("ProportionValue");
 				
 			}
-			P=P/movWindow;
-			IV=proportion1.Calculate_IV(P, FV, OV);
+			p=p/movWindow;
+			injectedV=proportion1.calculateIV(p, fixV, openV);
 			count=0;
 			
 			String queryUpdate="UPDATE Tickect_FV_OV"+
-	                   "SET  \"ProportionValue\" ="+P+", \"AffectedVersion\"= "+IV+
-			           "WHERE \"TicketBugID\"=  '"+TicketID +"'";
+	                   "SET  \"ProportionValue\" ="+p+", \"AffectedVersion\"= "+injectedV+
+			           "WHERE \"TicketBugID\"=  '"+ticketID +"'";
 			
 			statUpdate=con.prepareStatement(queryUpdate);
 		    statUpdate.executeUpdate();
@@ -77,11 +85,12 @@ public class Proportion2 {
 		
 	}
 	
-	public void Calculate_P_Tickets_With_Affected_Version() throws SQLException, IOException {
+	public void calculatePTicketsWithAffectedVersion() throws SQLException, IOException {
 		
-		PreparedStatement stat,statUpdate;
+		PreparedStatement stat;
+		PreparedStatement statUpdate;
 		ResultSet rs;
-		String TicketID;
+		String ticketID;
 		
 		Proportion prop=new Proportion();
 		int p;
@@ -95,23 +104,22 @@ public class Proportion2 {
 		
 		Connection con;
 		db=new DB();
-		con=db.connectToDB_TickectBugZookeeper();
+		con=db.connectToDBtickectBugZookeeper();
 		stat=con.prepareStatement(query);
 		
 		
 		rs=stat.executeQuery();
 		
 		while( rs.next() ) {
-			TicketID=rs.getString("TicketBugID");
-			FV=rs.getInt("FV");
-			OV=rs.getInt("OP");
-			IV=rs.getInt("AffectedVersion");
-			p=prop.Calculate_p(FV, OV, IV);
-			//System.out.println("fv "+FV+" ov "+OV+" iv "+IV+" p "+p);
-			//System.out.println("TicketID "+TicketID);
+			ticketID=rs.getString("TicketBugID");
+			fixV=rs.getInt("FV");
+			openV=rs.getInt("OP");
+			injectedV=rs.getInt("AffectedVersion");
+			p=prop.calculateP(fixV, openV, injectedV);
+			
 			queryUpdate="UPDATE \"TicketWithAffectedVersion\" " + 
 					"SET \"ProportionValue\"= " +p+ 
-					"WHERE \"TicketBugID\"=  '"+TicketID +"'";
+					"WHERE \"TicketBugID\"=  '"+ticketID +"'";
 			
 			statUpdate=con.prepareStatement(queryUpdate);
 			statUpdate.executeUpdate();

@@ -6,6 +6,7 @@ package vir;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.logging.Logger;
 
 /**
  * @author Virgilio
@@ -21,31 +22,31 @@ public class ClassToExecute {
 	 */
 	public static void main(String[] args) throws IOException, ParseException, SQLException {
 		//int SelectorProject;  //1=bookeeper   2=zookeeper
-		String InputCSV="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\InputCSV.csv";
-		String ZOOKEEPERVersionInfo="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";
-		String FileResult="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\FileResult.txt";
+		String inputCSV="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\InputCSV.csv";
+		String zookeeperVersionInfo="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";
+		String fileResult="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\FileResult.txt";
 		FilesHandling fh=new FilesHandling();
-		fh.CreateCSVfile(InputCSV);
-	    fh.Version_Javaclass_pair(FileResult,ZOOKEEPERVersionInfo,InputCSV);	
+		fh.createCSVfile(inputCSV);
+	    fh.versionJavaclassPair(fileResult,zookeeperVersionInfo,inputCSV);	
 		
 		FilesHandling3 fh3=new FilesHandling3();
-		//String ZOOKEEPERVersionInfo="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";		
-		String AffectedVersionsZookeperTickectsBug="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\AffectedVersionsZookeperTickectsBug.csv";
-		String TicketsBugWithAffectedVerANDdates="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\TicketsBugWithAffectedVerANDdates.txt";
-		fh3.Find_Versions_With_Dates_and_Associate_IndexVersion(AffectedVersionsZookeperTickectsBug, ZOOKEEPERVersionInfo,TicketsBugWithAffectedVerANDdates);
+		//String zookeeperVersionInfo="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";		
+		String affectedVersionsZookeperTickectsBug="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\AffectedVersionsZookeperTickectsBug.csv";
+		String ticketsBugWithAffectedVerANDdates="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\TicketsBugWithAffectedVerANDdates.txt";
+		fh3.findVersionsWithDatesAndAssociateIndexVersion(affectedVersionsZookeperTickectsBug, zookeeperVersionInfo,ticketsBugWithAffectedVerANDdates);
 		
 		
 		
 		/*Proportion p=new Proportion();
-		String DatesTicketsBug="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\DatesTicketsBug.txt";
-		String DatesFVOVTickectsBug="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\DatesFVOVTickectsBug.txt";
-		//String FileInfoProject="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";
-		p.Find_FV_OV(DatesTicketsBug, ZOOKEEPERVersionInfo,DatesFVOVTickectsBug);*/
+		String datesTicketsBug="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\DatesTicketsBug.txt";
+		String datesFVOVTickectsBug="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\DatesFVOVTickectsBug.txt";
+		//String fileInfoProject="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";
+		p.Find_FV_OV(datesTicketsBug, zookeeperVersionInfo,datesFVOVTickectsBug);*/
 		
 		Proportion2 p2=new Proportion2();
-		p2.Calculate_P_Tickets_With_Affected_Version();
+		p2.calculatePTicketsWithAffectedVersion();
 		
-		System.out.println("fine");
+		Logger.getLogger("MyLogger").info("fine");
 	}
 
 }

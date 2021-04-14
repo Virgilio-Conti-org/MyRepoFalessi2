@@ -12,8 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
-//import java.text.SimpleDateFormat;
-//import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,11 +20,13 @@ import java.util.List;
  */
 public class Proportion {
 
-	String FV,OV,IV;
+	String fixV;
+	String openV;
+	String injectV;
 	
 	
 	//metodo che calcola il valore P secondo il metodo proportion 
-	public int Calculate_p(int fv, int ov,int iv) throws IOException {
+	public int calculateP(int fv, int ov,int iv) {
 	
 	//paramertri	
 	//fv=fixVersion ov=openigVersion  iv=InjectedVersion	
@@ -52,7 +52,7 @@ public class Proportion {
 	}
 	
 	//metodo che calcola il valore Injected Version 
-	public int Calculate_IV(int p,int fv, int ov) {
+	public int calculateIV(int p,int fv, int ov) {
 		//paramertri	
 		//p=valore proportion fv=fixVersion ov=openigVersion  
 		
@@ -67,75 +67,69 @@ public class Proportion {
 	}
 	
 	// metodo per ottenere i valori di Fixed Version e Opening Version
-	public void Find_FV_OV(String FileInfoTicketsBug, String FileInfoProject, String FileDest) throws IOException, ParseException {
+	public void findFixVersionOpenVesion(String fileInfoTicketsBug, String fileInfoProject, String fileDest) throws IOException, ParseException {
 		
-		String ResolutionDate; //Date Res_date;
-		String CreatedDate; //Date Created_date;
-		//String DateLimit;  //Date dateMax;               //to get rid of 50% of the releases
-		String[] info= {"","","",""}; 
+		String resolutionDate; 
+		String createdDate; 
+		String[] info; 
 		String lineFile;
 		FilesHandling fh=new FilesHandling();
-		String VersioneFix;
-		String VersioneOpen;
-		int IndexFixVersion;
-		int IndexOpenVersion;
+		String versioneFix;
+		String versioneOpen;
+		int indexFixVersion;
+		int indexOpenVersion;
 		int lung;
 		
-		Path path= Paths.get(FileInfoProject);		
-		List<String> TicketsBugs =Files.readAllLines(path);
-	    lung=TicketsBugs.size();
+		Path path= Paths.get(fileInfoProject);		
+		List<String> ticketsBugs =Files.readAllLines(path);
+	    lung=ticketsBugs.size();
 		
-	    String[] DatesVersions= new String[lung-1];
-		String[] Versions     = new String[lung-1];
+	    String[] datesVersions= new String[lung-1];
+		String[] versions     = new String[lung-1];
 		
-		FileReader fr=new FileReader(FileInfoTicketsBug);
+		FileReader fr=new FileReader(fileInfoTicketsBug);
 		BufferedReader br=new BufferedReader(fr);
 		
-		FileWriter fw=new FileWriter(FileDest);
+		FileWriter fw=new FileWriter(fileDest);
 		BufferedWriter bw=new BufferedWriter(fw);
 		
-		//DateLimit=a.GetRidOf50Relases(FileInfoProject);
-		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		//dateMax=sdf.parse(DateLimit);
+		
 		
 	    for(int i=1;i<lung;i++) {
-			info=TicketsBugs.get(i).split(",");
-			Versions[i-1]=info[0];
-			DatesVersions[i-1]=info[3].substring(0,10);
-			//System.out.println(Versions[i-1]+" "+DatesVersions[i-1]);
+			info=ticketsBugs.get(i).split(",");
+			versions[i-1]=info[0];
+			datesVersions[i-1]=info[3].substring(0,10);
+			
 		}//for
 	    
 	    
-	    String[] buffSlipt= {"","",""};
+	    String[] buffSlipt;
+	    
+	   try{ 
 		while( (lineFile=br.readLine() ) !=null ) {
 			buffSlipt=lineFile.split(",");
-			   ResolutionDate=buffSlipt[1];              
-			 //  Res_date=sdf.parse(ResolutionDate);
+			
+			   resolutionDate=buffSlipt[1];              				   
+			   createdDate=buffSlipt[2];                 
+			  			   		   
+			   indexFixVersion=fh.dateBeforeDate(resolutionDate, datesVersions);
+			   indexOpenVersion=fh.dateBeforeDate(createdDate, datesVersions);
 			   
-			   CreatedDate=buffSlipt[2];                 
-			  // Created_date=sdf.parse(CreatedDate);
-			   
-			   /*if(Res_date.after(dateMax) || Created_date.after(dateMax)) {
-				   continue;
-			   }*/
-			   
-			   IndexFixVersion=fh.DateBefore_Date(ResolutionDate, DatesVersions);
-			   IndexOpenVersion=fh.DateBefore_Date(CreatedDate, DatesVersions);
-			   
-			   VersioneFix= Versions[IndexFixVersion] ;
-			   VersioneOpen=Versions[IndexOpenVersion] ;
+			   versioneFix= versions[indexFixVersion] ;
+			   versioneOpen=versions[indexOpenVersion] ;
 		
-			   bw.write(lineFile+","+VersioneFix+","+VersioneOpen+"\n");
+			   bw.write(lineFile+","+versioneFix+","+versioneOpen+"\n");
 			   bw.flush();
-			   //System.out.println("RD= "+ResolutionDate+" DateBef= "+DatesVersions[IndexFixVersion]+"  Ver= "+VersioneFix);
-			   //System.out.println("CD= "+CreatedDate+" DateBef= "+DatesVersions[IndexOpenVersion]+"  Ver= "+VersioneOpen);
 			   
-			   //System.out.println("RD= "+ResolutionDate+"  CD "+CreatedDate);
 			}
-	    
+	   }//try
+	   
+	   finally {
 	    br.close();
 	    bw.close();
-	}
+	   }
+	   
+	}//fine metodo
 	
 	
 }

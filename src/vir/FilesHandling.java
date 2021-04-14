@@ -27,78 +27,82 @@ import java.util.List;
 public class FilesHandling {
         
 	//metodo per associare una versione ad una classe java
-	public void Version_Javaclass_pair(String fileRes, String ProjectInfo, String FileCSVdest) throws IOException, ParseException{
+	public void versionJavaclassPair(String fileRes, String projectInfo, String fileCSVdest) throws IOException, ParseException{
 		
-		String[] info= {"","","",""}; 
+		String[] info; 
 		String lineFileRes;
-		String DataJavaClass="/"; 	
-		String Version;
-		String NameJavaClass; 
-		int IndexDataJavaClassVersion;
+		String dataJavaClass="/"; 	
+		String version;
+		String nameJavaClass; 
+		int indexDataJavaClassVersion;
 		int lung=0; 
 		
 		FileReader fr=new FileReader(fileRes);
 		BufferedReader br=new BufferedReader(fr);
 		
-		Path path= Paths.get(ProjectInfo);		
+		Path path= Paths.get(projectInfo);		
 		List<String> linesTicketsFile =Files.readAllLines(path);
 		lung=linesTicketsFile.size();
 		
-		String[] DatesVersions= new String[lung-1];
-		String[] Versions     = new String[lung-1];
+		String[] datesVersions= new String[lung-1];
+		String[] versions     = new String[lung-1];
 		
-		FileWriter fwCSV=new FileWriter(FileCSVdest,true);
+		FileWriter fwCSV=new FileWriter(fileCSVdest,true);
 		BufferedWriter bwCSV=new BufferedWriter(fwCSV);
 		
 		for(int i=1;i<lung;i++) {
 			info=linesTicketsFile.get(i).split(",");
-			Versions[i-1]=info[0];
-			DatesVersions[i-1]=info[3];
-			//System.out.println(Versions[i-1]+" "+DatesVersions[i-1]);
+			versions[i-1]=info[0];
+			datesVersions[i-1]=info[3];
+			
 		}
 			
+		try {
 			 while( (lineFileRes=br.readLine() ) !=null ) {
 					
 				if(lineFileRes.startsWith("Date") ) {
-					DataJavaClass=lineFileRes.substring(8,18);
-					//System.out.print("DATA "+DataJavaClass+"  ");
+					dataJavaClass=lineFileRes.substring(8,18);
+					
 				}
 				
 				if( lineFileRes.startsWith("M") ) {			
-				    NameJavaClass=lineFileRes.substring(2);
-					IndexDataJavaClassVersion=DateBefore_Date(DataJavaClass, DatesVersions);					
-					Version=Versions[IndexDataJavaClassVersion];
+				    nameJavaClass=lineFileRes.substring(2);
+					indexDataJavaClassVersion=dateBeforeDate(dataJavaClass, datesVersions);					
+					version=versions[indexDataJavaClassVersion];
 					
-					bwCSV.write(Version+","+NameJavaClass+"\n");
+									
+					bwCSV.write(version+","+nameJavaClass+"\n");
 					bwCSV.flush();
-					//System.out.print("DATA "+DataJavaClass+"  ");
-					//System.out.print("DATA BEF "+db+"  ");
-					//System.out.println("Ver "+Version+" -  JavaClass - "+NameJavaClass );
+					
 				}
 								
 					
 	          }//while
-			 
-		br.close();	
-		bwCSV.close();			
-		//System.out.print(" ok ");
+		}//try
+		
+		finally {
+			br.close();	
+			bwCSV.close();		
+		}	 
+				
+		
 	}
 	
 	//metodo per ottere la data subito precedente rispetto ad una data di riferimento
-	public int DateBefore_Date(String MyDate, String[] Dates) throws ParseException {
+	public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 		
 		int lung; 
 		int i=0;
 		
-		lung=Dates.length;
+		lung=dates.length;
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");	
-		Date inputDate=sdf.parse(MyDate);
-		Date date=new Date();
+		Date inputDate=sdf.parse(myDate);
+		Date date;
 		
 		
 		for( i=0;i<lung;i++) {
-			date=sdf.parse( Dates[i] );
+			date=sdf.parse( dates[i] );
 			
 			if(inputDate.after(date)) {
 				
@@ -118,7 +122,7 @@ public class FilesHandling {
 	}
 	
 	//metodo per creare un file csv 
-	public void CreateCSVfile(String path) throws FileNotFoundException {
+	public void createCSVfile(String path) throws FileNotFoundException {
 		
 		FileOutputStream fileW= new FileOutputStream(path);
 		PrintWriter pw =new PrintWriter(fileW);
@@ -130,9 +134,10 @@ public class FilesHandling {
 	}
 	
 	//metodo che restituisce la data che permette di eliminare la metà delle releases 
-	public String  GetRidOf50Relases( String percorso) throws IOException {
+	public String  getRidOf50Relases( String percorso) throws IOException {
 		int lung; 
-		String line,data;
+		String line;
+		String data;
 		String[] s;
 		
 		Path path= Paths.get(percorso);
@@ -151,21 +156,28 @@ public class FilesHandling {
 		data=s[3];
 		
 		return data;
-		//System.out.println(data);
+		
 	}
 	
 	//metodo che conta quanti tickets di tipo bug ci sono in un progetto
-	public int NumberOfTicketsBug(String FilepathTicketsBug) throws IOException {
+	public int numberOfTicketsBug(String filepathTicketsBug) throws IOException {
 		int count=0;
 		
-		FileReader fr=new FileReader(FilepathTicketsBug);
+		FileReader fr=new FileReader(filepathTicketsBug);
 		BufferedReader br=new BufferedReader(fr);
 		
-		while( br.readLine()  !=null ) {
-			count=count+1;
-		}
-		br.close();
-		return count;
-	}
+	   try {	
+		   while( br.readLine()  !=null ) {
+			   count=count+1;
+		   }		
+		   return count;
+	   }//try
+	   
+	   finally {
+		 br.close();
+	   }
+		
+}//fine metodo
+		
 	
 }
