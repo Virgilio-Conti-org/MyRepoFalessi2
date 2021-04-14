@@ -1,1 +1,0 @@
-project = ZOOKEEPER  AND  issuetype = Bug   AND( status = closed OR status=resolved ) AND resolution=fixed AND affectedVersion != none ORDER BY issuekey DESC
