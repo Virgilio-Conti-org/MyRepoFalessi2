@@ -18,20 +18,7 @@ private	String ticketsBugWithAffectedVerANDdates="D:\\Libri\\Università\\Falessi
 private String zookeeper="ZOOKEEPER-";
 private String bookkeeper="BOOKKEEPER-";
 
-private String pathFileCredentials="D:\\Libri\\Università\\Falessi\\postgresSql\\CredenzialiPostrgres.txt";
 
-/**
- * @return the pathFileCredentials
- */
-public String getPathFileCredentials() {
-	return pathFileCredentials;
-}
-/**
- * @param pathFileCredentials the pathFileCredentials to set
- */
-public void setPathFileCredentials(String pathFileCredentials) {
-	this.pathFileCredentials = pathFileCredentials;
-}
 /**
  * @return the inputCSV
  */

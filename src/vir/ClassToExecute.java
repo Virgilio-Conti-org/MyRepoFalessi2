@@ -22,7 +22,7 @@ public class ClassToExecute {
 	 */
 	public static void main(String[] args) throws IOException, ParseException, SQLException {
 		//int SelectorProject;  //1=bookeeper   2=zookeeper
-		String inputCSV="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\InputCSV.csv";
+		/*String inputCSV="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\InputCSV.csv";
 		String zookeeperVersionInfo="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";
 		String fileResult="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\FileResult.txt";
 		FilesHandling fh=new FilesHandling();
@@ -43,8 +43,9 @@ public class ClassToExecute {
 		//String fileInfoProject="D:\\Libri\\Università\\Falessi\\Repo\\RepoZookeeper\\ZOOKEEPERVersionInfo.csv";
 		p.Find_FV_OV(datesTicketsBug, zookeeperVersionInfo,datesFVOVTickectsBug);*/
 		
-		Proportion2 p2=new Proportion2();
-		p2.calculatePTicketsWithAffectedVersion();
+		//Proportion2 p2=new Proportion2();
+		//p2.calculatePTicketsWithAffectedVersion();
+		
 		
 		Logger.getLogger("MyLogger").info("fine");
 	}

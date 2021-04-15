@@ -36,9 +36,7 @@ public class FilesHandling {
 		String nameJavaClass; 
 		int indexDataJavaClassVersion;
 		int lung=0; 
-		
-		FileReader fr=new FileReader(fileRes);
-		BufferedReader br=new BufferedReader(fr);
+	
 		
 		Path path= Paths.get(projectInfo);		
 		List<String> linesTicketsFile =Files.readAllLines(path);
@@ -47,17 +45,27 @@ public class FilesHandling {
 		String[] datesVersions= new String[lung-1];
 		String[] versions     = new String[lung-1];
 		
-		FileWriter fwCSV=new FileWriter(fileCSVdest,true);
-		BufferedWriter bwCSV=new BufferedWriter(fwCSV);
-		
+			
 		for(int i=1;i<lung;i++) {
 			info=linesTicketsFile.get(i).split(",");
 			versions[i-1]=info[0];
 			datesVersions[i-1]=info[3];
 			
 		}
-			
+		
+		FileReader fr=null;
+		BufferedReader br=null;
+		
+		FileWriter fwCSV=null;
+		BufferedWriter bwCSV=null;
+		
 		try {
+			 fr=new FileReader(fileRes);
+			 br=new BufferedReader(fr);
+			
+			 fwCSV=new FileWriter(fileCSVdest,true);
+			 bwCSV=new BufferedWriter(fwCSV);
+			 
 			 while( (lineFileRes=br.readLine() ) !=null ) {
 					
 				if(lineFileRes.startsWith("Date") ) {

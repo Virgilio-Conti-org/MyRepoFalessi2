@@ -23,8 +23,6 @@ public class Proportion2 {
 	
 	public void calculatePticketsWithoutAffectedVersion() throws SQLException, IOException{
 		Connection con;
-		PreparedStatement stat;
-		PreparedStatement stat2;
 		PreparedStatement statUpdate;
 		
 		ResultSet rsTicketsNOaffectedVerion;
@@ -36,15 +34,15 @@ public class Proportion2 {
 		Proportion  proportion1=new Proportion();
 		String ticketID;
 		
-		String queryTicketsNOaffectedVerion="SELECT * " + 
-				"FROM \"Tickect_FV_OV\" as t_FV_OV" + 
+		String queryTicketsNOaffectedVerion="SELECT * FROM \"Tickect_FV_OV\" as t_FV_OV" + 
+				 
 				"WHERE NOT EXISTS ( SELECT * " + 
 				"                   FROM \"TicketWithAffectedVersion\" AS twAV" + 
 				"                   WHERE t_FV_OV.\"TicketBugID\"=twAV.\"TicketBugID\" )"+
 				"ORDER BY \"DateFixVersion\" DESC ";
 		
-		String queryTicketsWITHaffectedVerion="SELECT * " + 
-				      "FROM \"TicketWithAffectedVersion\" as twAV "+
+		String queryTicketsWITHaffectedVerion="SELECT * FROM \"TicketWithAffectedVersion\" as twAV "+ 
+				     
 				      "JOIN \"ZookeeperVersionsInfo\" as zk"+
 				      "on twAV.\"VersionName\"=zk.\"VersionName\" "+
 				      "ORDER BY zk.\"DateVersion\" DESC ";
@@ -53,11 +51,16 @@ public class Proportion2 {
 		
 		db=new DB();
 		con=db.connectToDBtickectBugZookeeper();
-		stat=con.prepareStatement(queryTicketsNOaffectedVerion);
-		stat2=con.prepareStatement(queryTicketsWITHaffectedVerion);
 		
+		
+	try(PreparedStatement stat=con.prepareStatement(queryTicketsNOaffectedVerion) ){
 		rsTicketsNOaffectedVerion=stat.executeQuery();
+	}
+	     
+	try(PreparedStatement stat2=con.prepareStatement(queryTicketsWITHaffectedVerion) ){
 		rsTicketsWITHaffectedVerion=stat2.executeQuery();
+	}
+				
 		
 		while( rsTicketsNOaffectedVerion.next() ) {
 			
@@ -68,7 +71,7 @@ public class Proportion2 {
 							
 			while(rsTicketsWITHaffectedVerion.next() && count<movWindow) {
 				p=p+rsTicketsWITHaffectedVerion.getInt("ProportionValue");
-				
+				count=count+1;
 			}
 			p=p/movWindow;
 			injectedV=proportion1.calculateIV(p, fixV, openV);
@@ -87,16 +90,14 @@ public class Proportion2 {
 	
 	public void calculatePTicketsWithAffectedVersion() throws SQLException, IOException {
 		
-		PreparedStatement stat;
-		PreparedStatement statUpdate;
 		ResultSet rs;
 		String ticketID;
 		
 		Proportion prop=new Proportion();
 		int p;
 		
-		String query="SELECT * " + 
-				"FROM \"Tickect_FV_OV\" as t_FV_OV " + 
+		String query="SELECT * FROM \"Tickect_FV_OV\" as t_FV_OV " + 
+				 
 				"JOIN \"TicketWithAffectedVersion\" AS twAV " + 
 				"ON   t_FV_OV.\"TicketBugID\" = twAV.\"TicketBugID\" ";
 		
@@ -105,11 +106,12 @@ public class Proportion2 {
 		Connection con;
 		db=new DB();
 		con=db.connectToDBtickectBugZookeeper();
-		stat=con.prepareStatement(query);
 		
-		
+			
+	try(PreparedStatement stat=con.prepareStatement(query) ){
 		rs=stat.executeQuery();
-		
+	}
+	
 		while( rs.next() ) {
 			ticketID=rs.getString("TicketBugID");
 			fixV=rs.getInt("FV");
@@ -121,9 +123,10 @@ public class Proportion2 {
 					"SET \"ProportionValue\"= " +p+ 
 					"WHERE \"TicketBugID\"=  '"+ticketID +"'";
 			
-			statUpdate=con.prepareStatement(queryUpdate);
-			statUpdate.executeUpdate();
-		}
+			try(PreparedStatement statUpdate=con.prepareStatement(queryUpdate)){
+			    statUpdate.executeUpdate();
+			}    
+		}//while
 		
 		
 	}

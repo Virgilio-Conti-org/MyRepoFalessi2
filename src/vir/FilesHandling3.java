@@ -31,13 +31,6 @@ public class FilesHandling3 {
 		int j;
 		int versioneTrovata=0;  //0=versione non trovata  1=versione trovata
 		
-		FileReader frCSV=new FileReader(pathFileCSV);
-		BufferedReader brCSV=new BufferedReader(frCSV);
-		
-		
-		FileWriter fwDest=new FileWriter(filedest);
-		BufferedWriter bwDest=new BufferedWriter(fwDest);
-		
 		Path path= Paths.get(fileInfoProject);		
 		List<String> linesTicketsFile =Files.readAllLines(path);
 		lung=linesTicketsFile.size();
@@ -53,9 +46,21 @@ public class FilesHandling3 {
 			
 		}//for
 		
-
+        
+		FileReader frCSV=null;
+		BufferedReader brCSV=null;
+				
+		FileWriter fwDest=null;
+		BufferedWriter bwDest=null;
 		
-		try {
+	try {
+		 frCSV=new FileReader(pathFileCSV);
+		 brCSV=new BufferedReader(frCSV);
+				
+		 fwDest=new FileWriter(filedest);
+		 bwDest=new BufferedWriter(fwDest); 	
+		
+		 
 		 brCSV.readLine();//get rid of first line
 		 while( (lineFileCSV=brCSV.readLine() ) !=null ) {
 				

@@ -72,6 +72,7 @@ public class Proportion {
 		String resolutionDate; 
 		String createdDate; 
 		String[] info; 
+		String[] buffSlipt;
 		String lineFile;
 		FilesHandling fh=new FilesHandling();
 		String versioneFix;
@@ -87,13 +88,6 @@ public class Proportion {
 	    String[] datesVersions= new String[lung-1];
 		String[] versions     = new String[lung-1];
 		
-		FileReader fr=new FileReader(fileInfoTicketsBug);
-		BufferedReader br=new BufferedReader(fr);
-		
-		FileWriter fw=new FileWriter(fileDest);
-		BufferedWriter bw=new BufferedWriter(fw);
-		
-		
 		
 	    for(int i=1;i<lung;i++) {
 			info=ticketsBugs.get(i).split(",");
@@ -101,11 +95,20 @@ public class Proportion {
 			datesVersions[i-1]=info[3].substring(0,10);
 			
 		}//for
-	    
-	    
-	    String[] buffSlipt;
-	    
+	        
+	   
+	   FileReader fr=null;
+	   BufferedReader br=null;
+			
+	   FileWriter fw=null;
+	   BufferedWriter bw=null; 
 	   try{ 
+	     fr=new FileReader(fileInfoTicketsBug);
+		 br=new BufferedReader(fr);
+			
+	     fw=new FileWriter(fileDest);
+	     bw=new BufferedWriter(fw); 
+		   
 		while( (lineFile=br.readLine() ) !=null ) {
 			buffSlipt=lineFile.split(",");
 			
@@ -122,12 +125,14 @@ public class Proportion {
 			   bw.flush();
 			   
 			}
+		
+		
 	   }//try
-	   
 	   finally {
-	    br.close();
-	    bw.close();
+		br.close();
+		bw.close();
 	   }
+	   
 	   
 	}//fine metodo
 	

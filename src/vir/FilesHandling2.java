@@ -19,11 +19,11 @@ import java.util.List;
  */
 public class FilesHandling2 {
     
-	private final String m="M";
-	private static final String commit="commit";
-	private final String date="Date";
-	private static final String bk="BOOKKEEPER-";
-	private static final String zk="ZOOKEEPER-";
+	private static final String M="M";
+	private static final String COMMIT="commit";
+	private static final String DATE="Date";
+	private static final String BK="BOOKKEEPER-";
+	private static final String ZK="ZOOKEEPER-";
 	private String projectChoosen="";
 	
 	//metodo per ottenere le classi java associate ai tickets Bug
@@ -35,45 +35,56 @@ public class FilesHandling2 {
 	  String ticket="";
 	  int lung;
 	  
-	  FileReader fr=new FileReader(pathGitLog);
-	  BufferedReader br=new BufferedReader(fr);
+	  
 	  
 	  Path path= Paths.get(fileResult);		
 	  List<String> linesTicketsBugs =Files.readAllLines(path);
 	  lung=linesTicketsBugs.size();
 	  
-	  FileWriter fwRes=new FileWriter(fileResult);
-	  BufferedWriter bwRes=new BufferedWriter(fwRes);
+	  
 		
 	  
 	  if(selectorProject==1) {
-		   projectChoosen=zk;
+		   projectChoosen=ZK;
 	  }
 	  if(selectorProject==2) {
-		   projectChoosen=bk;
+		   projectChoosen=BK;
 	  }
 	  
+	  FileReader fr=null;
+	  BufferedReader br=null; 
+	  
+	  FileWriter fwRes=null;
+	  BufferedWriter bwRes=null;
+	  
 	 try { 
-	  for(int i=0;i<lung;i++) {
-		  ticket=linesTicketsBugs.get(i);
+		 
+	   fr=new FileReader(pathGitLog);
+	   br=new BufferedReader(fr);
+		 		  
+	   fwRes=new FileWriter(fileResult);
+	   bwRes=new BufferedWriter(fwRes);
+		 
+	    for(int i=0;i<lung;i++) {
+		   ticket=linesTicketsBugs.get(i);
 		  
-		  bwRes.write(ticket+"\n");
-   	      bwRes.flush();
+		   bwRes.write(ticket+"\n");
+   	       bwRes.flush();
    	      
-		  if(ticket.startsWith(date) ) {
+		   if(ticket.startsWith(DATE) ) {
 			  continue;
-		  }
+		   }
 	        
 		  
-		  while(   !(br.readLine().contains(ticket)   ) ) {
+		   while(   !(br.readLine().contains(ticket)   ) ) {
 			//ciclo per trovare il particolare ticket bug
-		  }
+		   }
 		
 		
 		  lineLog=br.readLine();
-          while(  !(lineLog.startsWith(commit)  || lineLog.contains(projectChoosen))  ) {
+          while(  !(lineLog.startsWith(COMMIT)  || lineLog.contains(projectChoosen))  ) {
 			
-            if(lineLog.startsWith(m) && lineLog.contains(extensionJava)) {
+            if(lineLog.startsWith(M) && lineLog.contains(extensionJava)) {
         	  nameJavaClass=lineLog;
        	      bwRes.write(nameJavaClass+"\n");
        	      bwRes.flush();
@@ -108,23 +119,30 @@ public class FilesHandling2 {
 		lung=linesTicketsFile.size();
 		
 		
-		FileReader fr=new FileReader(pathGitLog);
-		BufferedReader br=new BufferedReader(fr);
+		FileReader fr=null;
+		BufferedReader br=null;
 		
-		FileWriter fwRes=new FileWriter(fileResult);
-		BufferedWriter bwRes=new BufferedWriter(fwRes);
+		FileWriter fwRes=null;
+		BufferedWriter bwRes=null;
 		
 		if(selectorProject==1) {
-			   projectChoosen=zk;
+			   projectChoosen=ZK;
 		  }
 		  if(selectorProject==2) {
-			   projectChoosen=bk;
+			   projectChoosen=BK;
 		  }
 		
 	try {	
+		
+		 fr=new FileReader(pathGitLog);
+		 br=new BufferedReader(fr);
+		
+		 fwRes=new FileWriter(fileResult);
+		 bwRes=new BufferedWriter(fwRes);
+		
 		while( (lineLog=br.readLine() ) !=null ) {
 			
-			if (lineLog.startsWith(date)) {
+			if (lineLog.startsWith(DATE)) {
 				data=lineLog;
 				
 				bwRes.write(data+"\n");
