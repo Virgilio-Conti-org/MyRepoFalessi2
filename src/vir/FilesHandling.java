@@ -53,18 +53,14 @@ public class FilesHandling {
 			
 		}
 		
-		FileReader fr=null;
-		BufferedReader br=null;
 		
-		FileWriter fwCSV=null;
-		BufferedWriter bwCSV=null;
 		
-		try {
-			 fr=new FileReader(fileRes);
-			 br=new BufferedReader(fr);
+		try (
+		  FileReader fr=new FileReader(fileRes);
+		  BufferedReader br=new BufferedReader(fr);
 			
-			 fwCSV=new FileWriter(fileCSVdest,true);
-			 bwCSV=new BufferedWriter(fwCSV);
+		  FileWriter fwCSV=new FileWriter(fileCSVdest,true);
+		  BufferedWriter bwCSV=new BufferedWriter(fwCSV)  ){
 			 
 			 while( (lineFileRes=br.readLine() ) !=null ) {
 					
@@ -88,10 +84,7 @@ public class FilesHandling {
 	          }//while
 		}//try
 		
-		finally {
-			br.close();	
-			bwCSV.close();		
-		}	 
+			 
 				
 		
 	}

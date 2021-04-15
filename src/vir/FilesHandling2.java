@@ -51,19 +51,15 @@ public class FilesHandling2 {
 		   projectChoosen=BK;
 	  }
 	  
-	  FileReader fr=null;
-	  BufferedReader br=null; 
 	  
-	  FileWriter fwRes=null;
-	  BufferedWriter bwRes=null;
 	  
-	 try { 
+	 try (
 		 
-	   fr=new FileReader(pathGitLog);
-	   br=new BufferedReader(fr);
+	   FileReader fr=new FileReader(pathGitLog);
+	   BufferedReader br=new BufferedReader(fr);
 		 		  
-	   fwRes=new FileWriter(fileResult);
-	   bwRes=new BufferedWriter(fwRes);
+	   FileWriter fwRes=new FileWriter(fileResult);
+	   BufferedWriter  bwRes=new BufferedWriter(fwRes); ){
 		 
 	    for(int i=0;i<lung;i++) {
 		   ticket=linesTicketsBugs.get(i);
@@ -98,10 +94,7 @@ public class FilesHandling2 {
 	  }//for   
 	 }//try  
 	 
-	 finally {
-		br.close();
-		bwRes.close();
-	 }
+	 
 	 
 }//fine metodo
 	
@@ -118,12 +111,7 @@ public class FilesHandling2 {
 		List<String> linesTicketsFile =Files.readAllLines(path);
 		lung=linesTicketsFile.size();
 		
-		
-		FileReader fr=null;
-		BufferedReader br=null;
-		
-		FileWriter fwRes=null;
-		BufferedWriter bwRes=null;
+				 
 		
 		if(selectorProject==1) {
 			   projectChoosen=ZK;
@@ -132,13 +120,13 @@ public class FilesHandling2 {
 			   projectChoosen=BK;
 		  }
 		
-	try {	
+	try (	
 		
-		 fr=new FileReader(pathGitLog);
-		 br=new BufferedReader(fr);
+		FileReader fr=new FileReader(pathGitLog);
+		BufferedReader br=new BufferedReader(fr);
 		
-		 fwRes=new FileWriter(fileResult);
-		 bwRes=new BufferedWriter(fwRes);
+		FileWriter fwRes=new FileWriter(fileResult);
+		BufferedWriter bwRes=new BufferedWriter(fwRes) ){
 		
 		while( (lineLog=br.readLine() ) !=null ) {
 			
@@ -172,11 +160,7 @@ public class FilesHandling2 {
 		}//while
 	}//try
 	
-    finally {
-    	br.close();
-		bwRes.close();
-	}	
-		
+   	
 		
 }//fine metodo
 	

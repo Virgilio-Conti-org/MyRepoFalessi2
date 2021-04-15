@@ -47,18 +47,13 @@ public class FilesHandling3 {
 		}//for
 		
         
-		FileReader frCSV=null;
-		BufferedReader brCSV=null;
-				
-		FileWriter fwDest=null;
-		BufferedWriter bwDest=null;
 		
-	try {
-		 frCSV=new FileReader(pathFileCSV);
-		 brCSV=new BufferedReader(frCSV);
+	try (
+		FileReader frCSV=new FileReader(pathFileCSV);
+		BufferedReader brCSV=new BufferedReader(frCSV);
 				
-		 fwDest=new FileWriter(filedest);
-		 bwDest=new BufferedWriter(fwDest); 	
+		FileWriter fwDest=new FileWriter(filedest);
+		BufferedWriter bwDest=new BufferedWriter(fwDest); ){	
 		
 		 
 		 brCSV.readLine();//get rid of first line
@@ -91,10 +86,7 @@ public class FilesHandling3 {
 	          }//while
 		}//try
 		
-		finally {
-			brCSV.close();
-			bwDest.close(); 
-		}
+		
 		    
 		    		
 	}//fine metodo

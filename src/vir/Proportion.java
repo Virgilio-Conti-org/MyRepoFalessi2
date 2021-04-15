@@ -97,17 +97,13 @@ public class Proportion {
 		}//for
 	        
 	   
-	   FileReader fr=null;
-	   BufferedReader br=null;
+	   
+	   try( 
+		   FileReader fr=new FileReader(fileInfoTicketsBug);
+		   BufferedReader br=new BufferedReader(fr);
 			
-	   FileWriter fw=null;
-	   BufferedWriter bw=null; 
-	   try{ 
-	     fr=new FileReader(fileInfoTicketsBug);
-		 br=new BufferedReader(fr);
-			
-	     fw=new FileWriter(fileDest);
-	     bw=new BufferedWriter(fw); 
+		   FileWriter fw=new FileWriter(fileDest);
+		   BufferedWriter bw=new BufferedWriter(fw) ){
 		   
 		while( (lineFile=br.readLine() ) !=null ) {
 			buffSlipt=lineFile.split(",");
@@ -125,13 +121,9 @@ public class Proportion {
 			   bw.flush();
 			   
 			}
-		
-		
+				
 	   }//try
-	   finally {
-		br.close();
-		bw.close();
-	   }
+	   
 	   
 	   
 	}//fine metodo
