@@ -5,19 +5,16 @@ package vir;
 
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,27 +24,34 @@ import java.util.List;
 public class FilesHandling {
         
 	//metodo per associare una versione ad una classe java
-	public void versionJavaclassPair(String fileRes, String projectInfo, String fileCSVdest) throws IOException, ParseException{
+	public void versionJavaclassPair(String fileLogGit,String projectInfo) throws IOException, ParseException, SQLException{
 		
 		String[] info; 
-		String lineFileRes;
-		String dataJavaClass="/"; 	
+		String line;
+		String dataCommit="/"; 	
 		String version;
-		String nameJavaClass; 
+		String commit="";
+		List<String> nameFiles; 
 		int indexDataJavaClassVersion;
 		int lung=0; 
-	
+	    Help help=new Help();
+	    Connection con;
+
+		DB db=new DB();
+		String queryInsert;
 		
 		Path path= Paths.get(projectInfo);		
-		List<String> linesTicketsFile =Files.readAllLines(path);
-		lung=linesTicketsFile.size();
+		List<String> linesProjectInfoFile =Files.readAllLines(path);
+		lung=linesProjectInfoFile.size();
 		
 		String[] datesVersions= new String[lung-1];
 		String[] versions     = new String[lung-1];
 		
+		db=new DB();
+		con=db.connectToDBtickectBugZookeeper();
 			
 		for(int i=1;i<lung;i++) {
-			info=linesTicketsFile.get(i).split(",");
+			info=linesProjectInfoFile.get(i).split(",");
 			versions[i-1]=info[0];
 			datesVersions[i-1]=info[3];
 			
@@ -56,129 +60,70 @@ public class FilesHandling {
 		
 		
 		try (
-		  FileReader fr=new FileReader(fileRes);
-		  BufferedReader br=new BufferedReader(fr);
-			
-		  FileWriter fwCSV=new FileWriter(fileCSVdest,true);
-		  BufferedWriter bwCSV=new BufferedWriter(fwCSV)  ){
+		  FileReader fr=new FileReader(fileLogGit);
+		  BufferedReader br=new BufferedReader(fr);			
+		                                           ){
 			 
-			 while( (lineFileRes=br.readLine() ) !=null ) {
+			 while( (line=br.readLine() ) !=null ) {
 					
-				if(lineFileRes.startsWith("Date") ) {
-					dataJavaClass=lineFileRes.substring(8,18);
+				 if(line.startsWith("commit") ) {
+						commit=line.substring(9);
+						
+					}
+				 
+				 
+				 if(line.startsWith("Date") ) {
+					dataCommit=line.substring(8,18);
 					
-				}
+				 }
 				
-				if( lineFileRes.startsWith("M") ) {			
-				    nameJavaClass=lineFileRes.substring(2);
-					indexDataJavaClassVersion=dateBeforeDate(dataJavaClass, datesVersions);					
+			   				
+				if( line.contains("ZOOKEEPER-") ) {	
+				 					  
+				    nameFiles=searchAndGetFileNames(line,br);
+				    indexDataJavaClassVersion=help.dateBeforeDate(dataCommit, datesVersions);					
 					version=versions[indexDataJavaClassVersion];
-					
-									
-					bwCSV.write(version+","+nameJavaClass+"\n");
-					bwCSV.flush();
-					
-				}
+				    
+				    for(String file:nameFiles) {
 								
+					 queryInsert="INSERT INTO \"ListJavaClasses\" (NameClass,Commit,DataCommit,Version)  " + 
+							"VALUES ('"+file+"' ,'"+commit+"' ,'"+dataCommit+"' ,"+version+" ,) ";
+							
+					
+					try(PreparedStatement statUpdate=con.prepareStatement(queryInsert)){
+					    statUpdate.executeUpdate();
+					}//try
+					
+					
+				  }//for
+				}//if
+			  				
 					
 	          }//while
 		}//try
 		
-			 
-				
-		
-	}
+			 		
+	}//fine metodo
 	
-	//metodo per ottere la data subito precedente rispetto ad una data di riferimento
-	public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
+	
+	public List<String> searchAndGetFileNames(String str,BufferedReader br) throws IOException {
+		List<String> namefiles=new ArrayList<String>(); 
 		
-		int lung; 
-		int i=0;
-		
-		lung=dates.length;
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");	
-		Date inputDate=sdf.parse(myDate);
-		Date date;
-		
-		
-		for( i=0;i<lung;i++) {
-			date=sdf.parse( dates[i] );
+		while(!str.equals("")) {
 			
-			if(inputDate.after(date)) {
-				
-			}
-		    
-			else {
-				break;
-			}
-		}//for
-					
-		if(i==0){
-		  i=0;
-		  return i;
-		}
+		   if(str.startsWith("M")) {
+		       namefiles.add(str.substring(2));
+		       	    	       	      
+		   } 
+		   
+	    str=br.readLine();   	      
+	       		
+		}//while
 		
-		return i-1;
-	}
+		return namefiles;
+	}//fine metodo
+		
 	
-	//metodo per creare un file csv 
-	public void createCSVfile(String path) throws FileNotFoundException {
-		
-		FileOutputStream fileW= new FileOutputStream(path);
-		PrintWriter pw =new PrintWriter(fileW);
-		
-		pw.println("Version,NameJavaClass,1,2,3,4,5,6,7,8,9,10,11,12,Buggy,Buggy_p");
-		pw.flush();
-		pw.close();
-		
-	}
 	
-	//metodo che restituisce la data che permette di eliminare la metà delle releases 
-	public String  getRidOf50Relases( String percorso) throws IOException {
-		int lung; 
-		String line;
-		String data;
-		String[] s;
-		
-		Path path= Paths.get(percorso);
-		List<String> linesFile =Files.readAllLines(path);
-		
-		lung=linesFile.size();
-		if(lung%2==1) {
-			lung=lung-1;
-			lung=lung/2;
-		}
-		else {
-		   lung=lung/2;
-		}
-		line=linesFile.get(lung);
-		s=line.split(",");
-		data=s[3];
-		
-		return data;
-		
-	}
-	
-	//metodo che conta quanti tickets di tipo bug ci sono in un progetto
-	public int numberOfTicketsBug(String filepathTicketsBug) throws IOException {
-		int count=0;
-		
-		FileReader fr=new FileReader(filepathTicketsBug);
-		BufferedReader br=new BufferedReader(fr);
-		
-	   try {	
-		   while( br.readLine()  !=null ) {
-			   count=count+1;
-		   }		
-		   return count;
-	   }//try
-	   
-	   finally {
-		 br.close();
-	   }
-		
-}//fine metodo
-		
 	
 }

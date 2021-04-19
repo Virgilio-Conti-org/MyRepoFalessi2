@@ -27,9 +27,15 @@ public class Proportion2 {
 		
 		ResultSet rsTicketsNOaffectedVerion;
 		ResultSet rsTicketsWITHaffectedVerion;
-		int movWindow=0;
+		
+		Help help=new Help();
+		int movWindow=help.numberOfTicketsBug()/100;
 		int count=0;
 		int p=0;
+		
+		if(movWindow==0) {
+			return;
+		}
 		
 		Proportion  proportion1=new Proportion();
 		String ticketID;

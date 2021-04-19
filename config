@@ -1,3 +1,4 @@
 pathCredentialsFileDB=D:\\Libri\\Università\\Falessi\\postgresSql\\CredenzialiPostrgres.txt
 userid=postgres
 password=A6YhbvtE82
+pathFileTicketsBug=D:\\Libri\\Università\\Falessi\\Repo\\RepoFalessi2\\MyRepoFalessi2\\TicketsTipoBugID.txt
