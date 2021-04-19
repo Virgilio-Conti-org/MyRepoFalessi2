@@ -22,8 +22,8 @@ public class CommitTicket {
 		String date="";
 		String ticket="";
 		String lineFile;
-		Connection con;
-		PreparedStatement statUpdate;
+		
+		Connection con;		
         DB db=new DB();
         
        con =db.connectToDBtickectBugZookeeper();
@@ -51,9 +51,9 @@ public class CommitTicket {
 					String queryInsert="INSERT INTO \"CommitTickets\" (Commit,TicketID,Data)  "+
 							"VALUES ( '"+commit+"' ,' "+ticket+" ',' "+date+" ' )";
 					
-					statUpdate=con.prepareStatement(queryInsert);
+					try(PreparedStatement statUpdate=con.prepareStatement(queryInsert) ){;
 					statUpdate.executeUpdate();
-					
+					}
 				}								
 					
 	          }//while

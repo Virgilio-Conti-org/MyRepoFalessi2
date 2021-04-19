@@ -107,7 +107,7 @@ public class FilesHandling {
 	
 	
 	public List<String> searchAndGetFileNames(String str,BufferedReader br) throws IOException {
-		List<String> namefiles=new ArrayList<String>(); 
+		List<String> namefiles=new ArrayList<>(); 
 		
 		while(!str.equals("")) {
 			

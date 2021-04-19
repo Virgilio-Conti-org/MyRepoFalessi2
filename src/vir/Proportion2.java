@@ -23,7 +23,6 @@ public class Proportion2 {
 	
 	public void calculatePticketsWithoutAffectedVersion() throws SQLException, IOException{
 		Connection con;
-		PreparedStatement statUpdate;
 		
 		ResultSet rsTicketsNOaffectedVerion;
 		ResultSet rsTicketsWITHaffectedVerion;
@@ -87,8 +86,9 @@ public class Proportion2 {
 	                   "SET  \"ProportionValue\" ="+p+", \"AffectedVersion\"= "+injectedV+
 			           "WHERE \"TicketBugID\"=  '"+ticketID +"'";
 			
-			statUpdate=con.prepareStatement(queryUpdate);
+			try(PreparedStatement statUpdate=con.prepareStatement(queryUpdate)){;
 		    statUpdate.executeUpdate();
+			}
 		}//while
 		
 		

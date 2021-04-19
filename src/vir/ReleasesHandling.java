@@ -33,7 +33,7 @@ public class ReleasesHandling {
 		int i;
 		int j;
 		int versioneTrovata=0;  //0=versione non trovata  1=versione trovata
-		List<String> result=new ArrayList<String>();
+		List<String> result=new ArrayList<>();
 		
 		Path path= Paths.get(fileInfoProject);		
 		List<String> linesTicketsFile =Files.readAllLines(path);
