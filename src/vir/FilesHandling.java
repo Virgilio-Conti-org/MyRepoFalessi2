@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,29 +27,29 @@ public class FilesHandling {
 		
 		String[] info; 
 		String line;
-		String dataCommit="/"; 	
+		var dataCommit="/"; 	
 		String version;
-		String commit="";
+		var commit="";
 		List<String> nameFiles; 
 		int indexDataJavaClassVersion;
-		int lung=0; 
+		var lung=0; 
 	    Help help=new Help();
 	    Connection con;
 
 		DB db=new DB();
 		String queryInsert;
 		
-		Path path= Paths.get(projectInfo);		
+		var path= Paths.get(projectInfo);		
 		List<String> linesProjectInfoFile =Files.readAllLines(path);
 		lung=linesProjectInfoFile.size();
 		
-		String[] datesVersions= new String[lung-1];
-		String[] versions     = new String[lung-1];
+		var datesVersions= new String[lung-1];
+		var versions     = new String[lung-1];
 		
 		db=new DB();
 		con=db.connectToDBtickectBugZookeeper();
 			
-		for(int i=1;i<lung;i++) {
+		for(var i=1;i<lung;i++) {
 			info=linesProjectInfoFile.get(i).split(",");
 			versions[i-1]=info[0];
 			datesVersions[i-1]=info[3];
@@ -60,8 +59,8 @@ public class FilesHandling {
 		
 		
 		try (
-		  FileReader fr=new FileReader(fileLogGit);
-		  BufferedReader br=new BufferedReader(fr);			
+		  var fr=new FileReader(fileLogGit);
+		  var br=new BufferedReader(fr);			
 		                                           ){
 			 
 			 while( (line=br.readLine() ) !=null ) {

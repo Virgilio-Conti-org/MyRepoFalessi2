@@ -52,7 +52,7 @@ public class DB {
     public String getUserID() throws IOException{
     	    	
     	fr=new FileReader(config);
-    	Properties property=new Properties();
+    	var property=new Properties();
 		property.load(fr);
 	
  
@@ -63,7 +63,7 @@ public class DB {
 	public String getPws() throws IOException{
 			
 		fr=new FileReader(config);
-		Properties property=new Properties();
+		var property=new Properties();
 		property.load(fr);
 	
  

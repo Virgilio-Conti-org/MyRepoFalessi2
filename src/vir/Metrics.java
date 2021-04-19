@@ -15,17 +15,17 @@ public class Metrics {
 
 	public void loc() throws InterruptedException, IOException {
 		//String p="D:\\p.txt";
-		String pathrepo="D:/Libri/Università/Falessi/Repo/RepoZookeeper/zookeeper";
+		var pathrepo="D:/Libri/Università/Falessi/Repo/RepoZookeeper/zookeeper";
 		//git ls-files | grep \"\\.java$\" | xargs wc -l	
 		
 	  //Process proc=Runtime.getRuntime().exec("git -C "+pathrepo+" ls-files ");	
 	  //Process proc=Runtime.getRuntime().exec("find /c /v \"\" "+p);	
 		Process proc=Runtime.getRuntime().exec("git -C "+pathrepo+" --no-pager log --numstat --all");
-	  StringBuilder output=new StringBuilder();
+	  var output=new StringBuilder();
 		
 		
-	  InputStreamReader isr=new InputStreamReader(proc.getInputStream());
-	  BufferedReader br=new BufferedReader(isr);
+	  var isr=new InputStreamReader(proc.getInputStream());
+	  var br=new BufferedReader(isr);
 	  
 	  String line;
 	  while( (line=br.readLine()) !=null) {

@@ -18,9 +18,9 @@ public class CommitTicket {
 
 	
 	public void findPair(String pathFileLogGit) throws IOException, SQLException {
-		String commit="";
-		String date="";
-		String ticket="";
+		var commit="";
+		var date="";
+		var ticket="";
 		String lineFile;
 		
 		Connection con;		
@@ -30,8 +30,8 @@ public class CommitTicket {
         
            
 		try (
-		  FileReader fr=new FileReader(pathFileLogGit);
-		  BufferedReader br=new BufferedReader(fr);
+		  var fr=new FileReader(pathFileLogGit);
+		  var br=new BufferedReader(fr);
 			                                          ){
 			 			
 			 while( (lineFile=br.readLine() ) !=null ) {
@@ -51,7 +51,7 @@ public class CommitTicket {
 					String queryInsert="INSERT INTO \"CommitTickets\" (Commit,TicketID,Data)  "+
 							"VALUES ( '"+commit+"' ,' "+ticket+" ',' "+date+" ' )";
 					
-					try(PreparedStatement statUpdate=con.prepareStatement(queryInsert) ){;
+					try(PreparedStatement statUpdate=con.prepareStatement(queryInsert) ){
 					statUpdate.executeUpdate();
 					}
 				}								

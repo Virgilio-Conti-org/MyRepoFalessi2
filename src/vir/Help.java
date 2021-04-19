@@ -10,14 +10,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -30,12 +28,12 @@ public class Help {
 public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 		
 		int lung; 
-		int i=0;
+		var i=0;
 		
 		lung=dates.length;
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");	
-		Date inputDate=sdf.parse(myDate);
+		var sdf = new SimpleDateFormat("yyyy-MM-dd");	
+		var inputDate=sdf.parse(myDate);
 		Date date;
 		
 		
@@ -62,8 +60,8 @@ public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 
 //metodo per gestire la parte numerica variabile di un perticolare ticket bug
 	public String projectStringTicket(String str) {
-		String ticket="/";
-		String regex="";
+		var ticket="/";
+		var regex="";
 		if(str.contains("ZOOKEEPER-")) {
 			regex="ZOOKEEPER-\\d{0,4}";
 		}
@@ -72,8 +70,8 @@ public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 			regex="BOOKKEEPER-\\d{0,4}";
 		}
 		
-		Pattern pattern=Pattern.compile(regex);
-		Matcher match=pattern.matcher(str);
+		var pattern=Pattern.compile(regex);
+		var match=pattern.matcher(str);
 		
 		if(match.find()) {
 			ticket=match.group(str);
@@ -89,8 +87,8 @@ public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 	//metodo per creare un file csv 
 	public void createCSVfile(String path) throws FileNotFoundException {
 		
-		FileOutputStream fileW= new FileOutputStream(path);
-		PrintWriter pw =new PrintWriter(fileW);
+		var fileW= new FileOutputStream(path);
+		var pw =new PrintWriter(fileW);
 		
 		pw.println("Version,NameJavaClass,1,2,3,4,5,6,7,8,9,10,11,12,Buggy,Buggy_p");
 		pw.flush();
@@ -105,7 +103,7 @@ public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 		String data;
 		String[] s;
 		
-		Path path= Paths.get(percorso);
+		var path= Paths.get(percorso);
 		List<String> linesFile =Files.readAllLines(path);
 		
 		lung=linesFile.size();
@@ -126,12 +124,12 @@ public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 	
 	//metodo che conta quanti tickets di tipo bug ci sono in un progetto
 	public int numberOfTicketsBug() throws IOException {
-		int count=0;
-		Properties prop= new Properties();
+		var count=0;
+		var prop= new Properties();
 		String path=prop.getProperty("pathFileTicketsBug");
 		
-		FileReader fr=new FileReader(path);
-		BufferedReader br=new BufferedReader(fr);
+		var fr=new FileReader(path);
+		var br=new BufferedReader(fr);
 		
 	   try {	
 		   while( br.readLine()  !=null ) {

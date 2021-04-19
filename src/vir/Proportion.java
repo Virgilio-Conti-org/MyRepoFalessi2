@@ -22,7 +22,7 @@ public class Proportion {
 	//fv=fixVersion ov=openigVersion  iv=InjectedVersion	
 		
 	//intero che conterrà il valore proportion calcolato
-		int p=0; 
+		var p=0; 
 		
 		
 		if(fv==ov) {
@@ -47,7 +47,7 @@ public class Proportion {
 		//p=valore proportion fv=fixVersion ov=openigVersion  
 		
 		//intero che conterrà il valore proportion calcolato
-		int iv=0;
+		var iv=0;
 		
 		//formula per il calcolo della InjectedVersion
 		iv=fv-(fv-ov)*p;

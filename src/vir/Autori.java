@@ -17,10 +17,10 @@ import java.sql.SQLException;
 public class Autori {
 
 	public void findAuthorCommitPair(String pathLogGitFile) throws SQLException, IOException {
-		String commit="/";
-		String date="/";
-		String autore="/";	
-		int count=0;
+		var commit="/";
+		var date="/";
+		var autore="/";	
+		var count=0;
 		String lineFile;
 		
 		Connection con;		
@@ -31,8 +31,8 @@ public class Autori {
        
         
 		try (
-		  FileReader fr=new FileReader(pathLogGitFile);
-		  BufferedReader br=new BufferedReader(fr);
+		  var fr=new FileReader(pathLogGitFile);
+		  var br=new BufferedReader(fr);
 			                                          ){
 			 			
 			 while( (lineFile=br.readLine() ) !=null ) {
@@ -57,7 +57,7 @@ public class Autori {
 					String queryInsert="INSERT INTO \"Autori\" (Name,Commit,Data)  "+
 							"VALUES ( '"+autore+"' ,' "+commit+" ',' "+date+" ' )";
 					
-					try(PreparedStatement statUpdate=con.prepareStatement(queryInsert) ){;
+					try(PreparedStatement statUpdate=con.prepareStatement(queryInsert) ){
 					statUpdate.executeUpdate();
 					count=0;
 					}//try

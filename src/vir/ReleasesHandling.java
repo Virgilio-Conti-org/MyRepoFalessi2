@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,16 +31,16 @@ public class ReleasesHandling {
 		int lung;
 		int i;
 		int j;
-		int versioneTrovata=0;  //0=versione non trovata  1=versione trovata
+		var versioneTrovata=0;  //0=versione non trovata  1=versione trovata
 		List<String> result=new ArrayList<>();
 		
-		Path path= Paths.get(fileInfoProject);		
+		var path= Paths.get(fileInfoProject);		
 		List<String> linesTicketsFile =Files.readAllLines(path);
 		lung=linesTicketsFile.size();
 		
-		String[] versions = new String[lung-1];
-		String[] versionName = new String[lung-1];
-		String[] versionDate = new String[lung-1];
+		var versions = new String[lung-1];
+		var versionName = new String[lung-1];
+		var versionDate = new String[lung-1];
 		String[] buffSplit;
 		
 		for( i=1;i<lung;i++) {
@@ -54,8 +53,8 @@ public class ReleasesHandling {
         
 		
 	try (
-		FileReader frCSV=new FileReader(pathFileCSV);
-		BufferedReader brCSV=new BufferedReader(frCSV);				
+		var frCSV=new FileReader(pathFileCSV);
+		var brCSV=new BufferedReader(frCSV);				
 		                                                ){	
 		
 		 
@@ -113,15 +112,15 @@ public class ReleasesHandling {
 		Connection conn=db.connectToDBtickectBugZookeeper();
 		
 		
-		Path path= Paths.get(fileInfoProject);		
+		var path= Paths.get(fileInfoProject);		
 		List<String> ticketsBugs =Files.readAllLines(path);
 	    lung=ticketsBugs.size();
 			
-	    String[] datesVersions= new String[lung-1];
-		String[] versions     = new String[lung-1];
+	    var datesVersions= new String[lung-1];
+		var versions     = new String[lung-1];
 			
 			
-	   for(int i=1;i<lung;i++) {
+	   for(var i=1;i<lung;i++) {
 		  info=ticketsBugs.get(i).split(",");
 		  versions[i-1]=info[0];
 	   	  datesVersions[i-1]=info[3].substring(0,10);
@@ -131,8 +130,8 @@ public class ReleasesHandling {
 		   
 		   
 		 try( 
-		   FileReader fr=new FileReader(fileInfoTicketsBug);
-		   BufferedReader br=new BufferedReader(fr);				
+		   var fr=new FileReader(fileInfoTicketsBug);
+		   var br=new BufferedReader(fr);				
 		                                            ){
 			   
 			while( (lineFile=br.readLine() ) !=null ) {
@@ -180,7 +179,7 @@ public class ReleasesHandling {
 		Connection con=db.connectToDBtickectBugZookeeper();
 		
 		
-		for(int i=0;i<dataInjectedVersions.size() ;i++) {
+		for(var i=0;i<dataInjectedVersions.size() ;i++) {
 		  buffer=dataInjectedVersions.get(i).split(",");
 		  ticket=buffer[0];
 		  dateInjectedVersion=buffer[1];

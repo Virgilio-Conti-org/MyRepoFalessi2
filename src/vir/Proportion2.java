@@ -29,8 +29,8 @@ public class Proportion2 {
 		
 		Help help=new Help();
 		int movWindow=help.numberOfTicketsBug()/100;
-		int count=0;
-		int p=0;
+		var count=0;
+		var p=0;
 		
 		if(movWindow==0) {
 			return;
@@ -86,7 +86,7 @@ public class Proportion2 {
 	                   "SET  \"ProportionValue\" ="+p+", \"AffectedVersion\"= "+injectedV+
 			           "WHERE \"TicketBugID\"=  '"+ticketID +"'";
 			
-			try(PreparedStatement statUpdate=con.prepareStatement(queryUpdate)){;
+			try(PreparedStatement statUpdate=con.prepareStatement(queryUpdate)){
 		    statUpdate.executeUpdate();
 			}
 		}//while
@@ -107,7 +107,7 @@ public class Proportion2 {
 				"JOIN \"TicketWithAffectedVersion\" AS twAV " + 
 				"ON   t_FV_OV.\"TicketBugID\" = twAV.\"TicketBugID\" ";
 		
-		String queryUpdate="";
+		var queryUpdate="";
 		
 		Connection con;
 		db=new DB();
