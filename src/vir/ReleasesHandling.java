@@ -25,7 +25,7 @@ public class ReleasesHandling {
 	
 	//metodo che trova le affected versions che hanno una data e poi associa  
 	//a queste l'indice numerico corrispondente
-	public List<String> findVersionsWithDatesAndAssociateIndexVersion(String pathFileCSV, String fileInfoProject) throws IOException {
+	public List<String> findInjectedVersionsWithDatesAndAssociateIndexVersion(String pathFileCSV, String fileInfoProject) throws IOException {
 		String[] info;
 		String lineFileCSV;
 		int lung;
@@ -47,7 +47,7 @@ public class ReleasesHandling {
 			info=linesTicketsFile.get(i).split(",");
 			versions[i-1]=info[0];//indice numerico intero
 			versionName[i-1]=info[2];
-			versionDate[i-1]=info[3];
+			versionDate[i-1]=info[3].substring(0,10);
 		}//for
 		
         
@@ -58,7 +58,7 @@ public class ReleasesHandling {
 		                                                ){	
 		
 		 
-		 brCSV.readLine();//get rid of first line
+		 lineFileCSV=brCSV.readLine();//get rid of first line
 		 while( (lineFileCSV=brCSV.readLine() ) !=null ) {
 				
 			 buffSplit=lineFileCSV.split(",");
@@ -185,11 +185,13 @@ public class ReleasesHandling {
 		  dateInjectedVersion=buffer[1];
 		  injectedVersion=buffer[2];
 		  
-		  String queryUPD="UPDATE  Tickect_FV_OV  "+
-				"SET  \"DateAffectedVersion\" ="+dateInjectedVersion+", "+
+		  
+		  String queryUPD="UPDATE  \"Tickect_FV_OV\" "+
+				"SET  \"DateAffectedVersion\" ='"+dateInjectedVersion+"', "+
 					  "\"AffectedVersion\"= "+injectedVersion+
 		        "WHERE \"TicketBugID\"=  '"+ticket +"'";
 		
+		  
 		try(PreparedStatement stat=con.prepareStatement(queryUPD) ){
 			stat.executeUpdate();
 		}

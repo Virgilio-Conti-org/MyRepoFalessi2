@@ -20,10 +20,10 @@ import java.util.List;
  * @author Virgilio
  *
  */
-public class FilesHandling {
+public class JavaClassesHandling {
         
 	//metodo per associare una versione ad una classe java
-	public void versionJavaclassPair(String fileLogGit,String projectInfo) throws IOException, ParseException, SQLException{
+	public void versionJavaClassPair(String fileLogGit,String projectInfo) throws IOException, ParseException, SQLException{
 		
 		String[] info; 
 		String line;
@@ -52,7 +52,7 @@ public class FilesHandling {
 		for(var i=1;i<lung;i++) {
 			info=linesProjectInfoFile.get(i).split(",");
 			versions[i-1]=info[0];
-			datesVersions[i-1]=info[3];
+			datesVersions[i-1]=info[3].substring(0, 10);
 			
 		}
 		
@@ -66,8 +66,8 @@ public class FilesHandling {
 			 while( (line=br.readLine() ) !=null ) {
 					
 				 if(line.startsWith("commit") ) {
-						commit=line.substring(9);
-						
+						commit=line.substring(7);
+						//System.out.println("in if c");
 					}
 				 
 				 
@@ -78,20 +78,21 @@ public class FilesHandling {
 				
 			   				
 				if( line.contains("ZOOKEEPER-") ) {	
-				 					  
+					//System.out.println("in if zk");				  
 				    nameFiles=searchAndGetFileNames(line,br);
 				    indexDataJavaClassVersion=help.dateBeforeDate(dataCommit, datesVersions);					
 					version=versions[indexDataJavaClassVersion];
-				    
-				    for(String file:nameFiles) {
+					
+					
+				    for(var i=0;i<nameFiles.size();i++) {
 								
-					 queryInsert="INSERT INTO \"ListJavaClasses\" (NameClass,Commit,DataCommit,Version)  " + 
-							"VALUES ('"+file+"' ,'"+commit+"' ,'"+dataCommit+"' ,"+version+" ,) ";
+					 queryInsert="INSERT INTO \"ListJavaClasses\" ( \"NameClass\" , \"Commit\" , \"DataCommit\" , \"Version\")  " + 
+							"VALUES ('"+nameFiles.get(i)+"' ,'"+commit+"' ,'"+dataCommit+"' ,'"+version+"' ) ";
 							
 					
 					try(PreparedStatement statUpdate=con.prepareStatement(queryInsert)){
 					    statUpdate.executeUpdate();
-					}//try
+					}//try interno
 					
 					
 				  }//for
@@ -107,17 +108,22 @@ public class FilesHandling {
 	
 	public List<String> searchAndGetFileNames(String str,BufferedReader br) throws IOException {
 		List<String> namefiles=new ArrayList<>(); 
+		String line=str;
 		
-		while(!str.equals("")) {
-			
-		   if(str.startsWith("M")) {
-		       namefiles.add(str.substring(2));
+		while(!line.startsWith("M")) {
+			//ciclo per trovare il primo file
+			line=br.readLine(); 
+		}
+		
+		while(!line.equals("")) {
+	       if(line.startsWith("M")) {
+		       namefiles.add(line.substring(2));
 		       	    	       	      
 		   } 
-		   
-	    str=br.readLine();   	      
-	       		
-		}//while
+	       
+	       line=br.readLine();   
+		}   
+	      	      
 		
 		return namefiles;
 	}//fine metodo

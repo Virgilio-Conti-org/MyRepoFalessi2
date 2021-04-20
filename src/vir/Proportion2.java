@@ -28,9 +28,9 @@ public class Proportion2 {
 		ResultSet rsTicketsWITHaffectedVerion;
 		
 		Help help=new Help();
-		int movWindow=help.numberOfTicketsBug()/100;
+		var movWindow=help.numberOfTicketsBug()/100;
 		var count=0;
-		var p=0;
+		int p=0;
 		
 		if(movWindow==0) {
 			return;

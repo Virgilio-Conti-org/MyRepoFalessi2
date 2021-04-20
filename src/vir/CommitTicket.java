@@ -22,6 +22,7 @@ public class CommitTicket {
 		var date="";
 		var ticket="";
 		String lineFile;
+		Help help= new Help();
 		
 		Connection con;		
         DB db=new DB();
@@ -38,17 +39,18 @@ public class CommitTicket {
 					
 				
 				if(lineFile.startsWith("commit") ) {
-					commit=lineFile.substring(8);
+					commit=lineFile.substring(6);
 										
 				}
 				
 				if(lineFile.startsWith("Date") ) {
-					date=lineFile.substring(5);
+					date=lineFile.substring(8,18);
 					
 				}
 				
 				if(lineFile.contains("ZOOKEEPER-")  ) {
-					String queryInsert="INSERT INTO \"CommitTickets\" (Commit,TicketID,Data)  "+
+					ticket=help.projectStringTicket(lineFile);
+					String queryInsert="INSERT INTO \"CommitTickets\" ( \"Commit\" ,\"TicketID\" ,\"Data\")  "+
 							"VALUES ( '"+commit+"' ,' "+ticket+" ',' "+date+" ' )";
 					
 					try(PreparedStatement statUpdate=con.prepareStatement(queryInsert) ){

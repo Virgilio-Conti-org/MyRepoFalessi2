@@ -27,8 +27,7 @@ public class Autori {
         DB db=new DB();
         
        con =db.connectToDBtickectBugZookeeper();
-        
-       
+              
         
 		try (
 		  var fr=new FileReader(pathLogGitFile);
@@ -38,13 +37,13 @@ public class Autori {
 			 while( (lineFile=br.readLine() ) !=null ) {
 					
 				if(lineFile.startsWith("commit") ) {
-					commit=lineFile.substring(8);
+					commit=lineFile.substring(6);
 					count=count+1;
 					
 				}
 				
 				if(lineFile.startsWith("Date") ) {
-					date=lineFile.substring(5);
+					date=lineFile.substring(8,18);
 					count=count+1;
 				}
 				
@@ -54,12 +53,17 @@ public class Autori {
 				}
 				
 				if(count==3) {
-					String queryInsert="INSERT INTO \"Autori\" (Name,Commit,Data)  "+
-							"VALUES ( '"+autore+"' ,' "+commit+" ',' "+date+" ' )";
+					/*String queryInsert="INSERT INTO \"Autori\" (  \"Name\" , \"Commit\" , \"DataCommit\")  "+
+							"VALUES ( '"+autore+"' ,' "+commit+" ',' "+date+" ' )";*/
 					
+					String queryInsert="INSERT INTO \"Autori\" (  \"Name\" , \"Commit\" , \"DataCommit\")  "+
+							"VALUES ( ? , ?, ? )";
 					try(PreparedStatement statUpdate=con.prepareStatement(queryInsert) ){
-					statUpdate.executeUpdate();
-					count=0;
+					    statUpdate.setString(1, autore);
+					    statUpdate.setString(2, commit);
+					    statUpdate.setString(3, date);
+					    statUpdate.executeUpdate();
+					    count=0;
 					}//try
 					
 				}//if								

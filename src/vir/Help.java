@@ -3,6 +3,7 @@
  */
 package vir;
 
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.regex.Pattern;
+
 
 /**
  * @author Virgilio
@@ -60,28 +61,54 @@ public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 
 //metodo per gestire la parte numerica variabile di un perticolare ticket bug
 	public String projectStringTicket(String str) {
-		var ticket="/";
-		var regex="";
+		String p;
+		var projectChoosen=""; 
+		var lungProjectChoosen=0;
+		int lungStr;
+		var i=0;
+		int indice;
+		int indice2;
+		var diff=0;
+		
 		if(str.contains("ZOOKEEPER-")) {
-			regex="ZOOKEEPER-\\d{0,4}";
+			projectChoosen="ZOOKEEPER-";
+			lungProjectChoosen=projectChoosen.length();
+			
 		}
-		
 		if(str.contains("BOOKKEEPER-")) {
-			regex="BOOKKEEPER-\\d{0,4}";
+			projectChoosen="BOOKKEEPER-";
+			lungProjectChoosen=projectChoosen.length();
 		}
 		
-		var pattern=Pattern.compile(regex);
-		var match=pattern.matcher(str);
 		
-		if(match.find()) {
-			ticket=match.group(str);
+		lungStr=str.length();
+		
+		indice=str.indexOf(projectChoosen);
+		
+		indice2=indice+lungProjectChoosen;
+		
+		if(indice2>lungStr-4) {
+			
+			diff=lungStr-indice2;
+			p=str.substring(indice2, indice2+diff);
+			return projectChoosen+p;
+		}
+		else {
+						
+		    p=str.substring(indice2, indice2+4);			
 		}
 		
-		return ticket;
+		for( i=0;i<4;i++) {
+			if(!Character.isDigit(p.charAt(i) ) ) {
+				break;
+			}
+		}
+		
+		return projectChoosen+p.substring(0, i);
 				
 	}//fine metodo
-
-
+				
+	
 
 	
 	//metodo per creare un file csv 
@@ -125,22 +152,26 @@ public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 	//metodo che conta quanti tickets di tipo bug ci sono in un progetto
 	public int numberOfTicketsBug() throws IOException {
 		var count=0;
+		var s="";
+		
 		var prop= new Properties();
-		String path=prop.getProperty("pathFileTicketsBug");
+		FileReader f=new FileReader("config");
+		prop.load(f);
+		var path=prop.getProperty("pathFileTicketsBug");
 		
-		var fr=new FileReader(path);
-		var br=new BufferedReader(fr);
-		
-	   try {	
-		   while( br.readLine()  !=null ) {
-			   count=count+1;
-		   }		
-		   return count;
+				
+	   try(var fr=new FileReader(path);
+		   var br=new BufferedReader(fr)	   
+			                                   ){
+			                                      		   			                          
+			while( (s=br.readLine()) !=null ) {
+				count=count+1;
+				s=s+"s";
+			}
+		   
 	   }//try
 	   
-	   finally {
-		 br.close();
-	   }
+	   return count;
 		
 }//fine metodo
 	
