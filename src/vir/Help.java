@@ -155,8 +155,10 @@ public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 		var s="";
 		
 		var prop= new Properties();
-		FileReader f=new FileReader("config");
-		prop.load(f);
+		
+		try(var f=new FileReader("config") ){
+		   prop.load(f);
+		}
 		var path=prop.getProperty("pathFileTicketsBug");
 		
 				
@@ -166,7 +168,7 @@ public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 			                                      		   			                          
 			while( (s=br.readLine()) !=null ) {
 				count=count+1;
-				s=s+"s";
+				s=s.concat("s");
 			}
 		   
 	   }//try

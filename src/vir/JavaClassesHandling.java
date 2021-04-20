@@ -67,7 +67,7 @@ public class JavaClassesHandling {
 					
 				 if(line.startsWith("commit") ) {
 						commit=line.substring(7);
-						//System.out.println("in if c");
+						
 					}
 				 
 				 
@@ -78,7 +78,7 @@ public class JavaClassesHandling {
 				
 			   				
 				if( line.contains("ZOOKEEPER-") ) {	
-					//System.out.println("in if zk");				  
+									  
 				    nameFiles=searchAndGetFileNames(line,br);
 				    indexDataJavaClassVersion=help.dateBeforeDate(dataCommit, datesVersions);					
 					version=versions[indexDataJavaClassVersion];

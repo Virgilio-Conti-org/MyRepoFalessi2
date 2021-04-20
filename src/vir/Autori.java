@@ -53,8 +53,6 @@ public class Autori {
 				}
 				
 				if(count==3) {
-					/*String queryInsert="INSERT INTO \"Autori\" (  \"Name\" , \"Commit\" , \"DataCommit\")  "+
-							"VALUES ( '"+autore+"' ,' "+commit+" ',' "+date+" ' )";*/
 					
 					String queryInsert="INSERT INTO \"Autori\" (  \"Name\" , \"Commit\" , \"DataCommit\")  "+
 							"VALUES ( ? , ?, ? )";

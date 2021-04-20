@@ -30,7 +30,7 @@ public class Proportion2 {
 		Help help=new Help();
 		var movWindow=help.numberOfTicketsBug()/100;
 		var count=0;
-		int p=0;
+		var p=0;
 		
 		if(movWindow==0) {
 			return;
