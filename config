@@ -1,4 +1,5 @@
-pathCredentialsFileDB=D:\\Libri\\Università\\Falessi\\postgresSql\\CredenzialiPostrgres.txt
+pathCredentialsFileDB=D:\\Libri\\Universita\\Falessi\\postgresSql\\CredenzialiPostrgres.txt
 userid=postgres
 password=A6YhbvtE82
-pathFileTicketsBug=D:\\Libri\\Università\\Falessi\\Repo\\RepoFalessi2\\MyRepoFalessi2\\TicketsTipoBugID.txt
+pathFileTicketsBug=D:\\Libri\\Universita\\Falessi\\Repo\\RepoFalessi2\\MyRepoFalessi2\\TicketsTipoBugID.txt
+pathRepoZookeeper=D:\\Libri\\Universita\\Falessi\\Repo\\RepoZookeeper\\zookeeper
