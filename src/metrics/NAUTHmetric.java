@@ -4,7 +4,6 @@
 package metrics;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.List;
  */
 public class NAUTHmetric {
 
-	public int nauth(String pathLogGit, String JavaClassName) throws FileNotFoundException, IOException {
+	public int nauth(String pathLogGit, String javaClassName) throws  IOException {
 		String lineFile;
 		String author;
 		boolean isCommitted;
@@ -33,7 +32,7 @@ public class NAUTHmetric {
 				if(lineFile.startsWith("Author ") ) {
 					
 				   author=lineFile.substring(8); 				
-				   isCommitted=checkIfAuthorCommittedJavaClass(author, br, JavaClassName);
+				   isCommitted=checkIfAuthorCommittedJavaClass(author, br, javaClassName);
 				   
 				   if(isCommitted) {
 					  listAuthors.add(author); 
@@ -55,14 +54,15 @@ public class NAUTHmetric {
 }//fine metodo
 	
 	
-	public boolean checkIfAuthorCommittedJavaClass(String str,BufferedReader br, String javaClassName) {
+	public boolean checkIfAuthorCommittedJavaClass(String str,BufferedReader br, String javaClassName) throws IOException {
 		   
 	   var lineFile=str;
 		   
 	   while(!lineFile.startsWith("commit")) {
 			 if(lineFile.contains(javaClassName)) {
 				return true;	 
-			 }		   
+			 }	
+			 lineFile=br.readLine();
 	   }
 	   
 	  return false;
@@ -79,6 +79,7 @@ public class NAUTHmetric {
 				if( autori.contains(elem) ) {
 					
 					autori.remove(j);
+					j=j-1;
 				}
 				
 			}//for interno

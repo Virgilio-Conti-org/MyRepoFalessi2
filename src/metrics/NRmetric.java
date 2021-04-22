@@ -4,7 +4,6 @@
 package metrics;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -14,7 +13,7 @@ import java.io.IOException;
  */
 public class NRmetric {
 
-	public int nr(String pathLogGit,String javaClassName) throws FileNotFoundException, IOException {
+	public int nr(String pathLogGit,String javaClassName) throws IOException {
 		String lineFile;
 		var nr=0;
 		
@@ -41,7 +40,7 @@ public class NRmetric {
 	}//fine metodo
 	
 	
-   public int checkIfJavaClassIsCommitted(String str,BufferedReader br, String javaClassName,int nr) {
+   public int checkIfJavaClassIsCommitted(String str,BufferedReader br, String javaClassName,int nr) throws IOException {
 	   
 	   var lineFile=str;
 	   
@@ -49,6 +48,7 @@ public class NRmetric {
 			  if(lineFile.contains(javaClassName)) {
 				 nr=nr+1; 
 			  }
+			  lineFile=br.readLine();
 	   
 	   }
 	   return nr;
