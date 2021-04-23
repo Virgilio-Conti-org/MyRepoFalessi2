@@ -4,8 +4,13 @@
 package commands;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Virgilio
@@ -13,48 +18,62 @@ import java.io.InputStreamReader;
  */
 public class CommandGitShow {
 
-public String commandGitShow(String commit) throws IOException, InterruptedException {
+public List<String> commandGitShow(String commit) throws IOException, InterruptedException {
 		
-		var errore="";
+		List<String> errore=new ArrayList<>();
 		String lineErrore;
+		
+		List<String> resultOK=new ArrayList<>();
 		String lineOK;
-		var stringLOC="";
+	
+		
+		var prop=new Properties();		
+		try(var fr = new FileReader("config")
+			                                        ){
+		   prop.load(fr);
+	    }
+		var pathRepoZookeeper=prop.getProperty("pathRepoZookeeper");
+		
+		
 	    var pb=new ProcessBuilder();
 	    
+	    var fromFolder=new File(pathRepoZookeeper);
+	    pb.directory( fromFolder);
 	    pb.command("git", "--no-pager", "show",commit,"--numstat");
-	    
+	    pb.redirectErrorStream(true);
 		
 		var process= pb.start();
 		
-		try(var isErrore =process.getErrorStream();
+		try(/*var isErrore =process.getErrorStream();
 			var isrErrore=new InputStreamReader( isErrore );		
-			var brErrore=new BufferedReader(isrErrore);
+			var brErrore=new BufferedReader(isrErrore);*/
 				
 			var isOK= process.getInputStream();		
 			var isr=new InputStreamReader( isOK );		
 			var brOK=new BufferedReader(isr);
 					                                              ){
+			
+			/*while( (lineErrore=brErrore.readLine()) !=null) {
+				errore.add(lineErrore);
+			}*/
 				
-			while( (lineErrore=brErrore.readLine()) !=null) {
-				errore=errore.concat(lineErrore);
-			}
+			while( (lineOK=brOK.readLine()) !=null) {				
+					resultOK.add(lineOK);
+								
+			}//while
 				
-			while( (lineOK=brOK.readLine()) !=null) {
-					stringLOC=stringLOC.concat(lineOK);
-				}
-				
-			 }//try 
-				
-					
+						
 			int exit=process.waitFor();
 				
-			if(exit==0) {
-				return stringLOC;
-			}
+			//if(exit==0) {
+				
+				return resultOK;
+			/*}
 			else {
+				
 				return errore;
-			}
-		
+			}*/
+		}//try 
 		
 	}//fine metodo
 	

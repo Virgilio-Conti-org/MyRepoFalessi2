@@ -39,7 +39,7 @@ public class Help2 {
 		var max=numbers.get(0);
 		int temp;
 		
-		for(int i=1;i<numbers.size();i++) {
+		for(var i=1;i<numbers.size();i++) {
 			temp=numbers.get(i);
 			if(temp>max) {
 				max=temp;
@@ -60,7 +60,7 @@ public class Help2 {
 			return -100;
 		}
 		
-        for(int i=0;i<size;i++) {
+        for(var i=0;i<size;i++) {
 			sum=sum+numbers.get(i);
 		}
         
