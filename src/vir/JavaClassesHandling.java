@@ -16,6 +16,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import commands.CommandGitShow;
+
 /**
  * @author Virgilio
  *
@@ -23,16 +25,17 @@ import java.util.List;
 public class JavaClassesHandling {
         
 	//metodo per associare una versione ad una classe java
-	public void versionJavaClassPair(String fileLogGit,String projectInfo) throws IOException, ParseException, SQLException{
+	public void versionJavaClassPair(String fileLogGit,String projectInfo) throws IOException, ParseException, SQLException, InterruptedException{
 		
 		String[] info; 
-		String line;
-		var dataCommit="/"; 	
+		String line;		 	
 		String version;
 		var commit="";
+		var dataCommit="/";
 		List<String> nameFiles; 
 		int indexDataJavaClassVersion;
 		var lung=0; 
+		
 	    Help help=new Help();
 	    Connection con;
 
@@ -62,9 +65,10 @@ public class JavaClassesHandling {
 		  var fr=new FileReader(fileLogGit);
 		  var br=new BufferedReader(fr);			
 		                                           ){
-			 
+			 //int c=0;
 			 while( (line=br.readLine() ) !=null ) {
-					
+				//c=c+1;
+				//System.out.println(c);	
 				 if(line.startsWith("commit") ) {
 						commit=line.substring(7);
 						
@@ -79,7 +83,7 @@ public class JavaClassesHandling {
 			   				
 				if( line.contains("ZOOKEEPER-") ) {	
 									  
-				    nameFiles=searchAndGetFileNames(line,br);
+				    nameFiles=searchAndGetFileNames(commit);
 				    indexDataJavaClassVersion=help.dateBeforeDate(dataCommit, datesVersions);					
 					version=versions[indexDataJavaClassVersion];
 					
@@ -106,26 +110,39 @@ public class JavaClassesHandling {
 	}//fine metodo
 	
 	
-	public List<String> searchAndGetFileNames(String str,BufferedReader br) throws IOException {
-		List<String> namefiles=new ArrayList<>(); 
-		String line=str;
+	public List<String> searchAndGetFileNames(String commit) throws IOException, InterruptedException {
+		List<String> commandResult=new ArrayList<>();
+		var sizeResult=0;
 		
-		while(!line.startsWith("M")) {
-			//ciclo per trovare il primo file
-			line=br.readLine(); 
-		}
+		List<String> nameFiles=new ArrayList<>();
 		
-		while(!line.equals("")) {
-	       if(line.startsWith("M")) {
-		       namefiles.add(line.substring(2));
+		
+		String[] buffSplit;
+		String line;
+		int i;
+		
+		CommandGitShow cmdShow=new CommandGitShow();
+		
+		commandResult=cmdShow.commandGitShow(commit);
+		sizeResult=commandResult.size();
+		
+		
+		i=sizeResult-1;
+		while(!(line=commandResult.get(i)).equals("") && i>=0) {
+		   
+		   buffSplit=line.split("\t");	
+	       if( (buffSplit.length) ==3 ) {
+	    	   
+	    	   var file=buffSplit[2];
+		       nameFiles.add(file);
 		       	    	       	      
 		   } 
 	       
-	       line=br.readLine();   
+	       i=i-1;
 		}   
 	      	      
 		
-		return namefiles;
+		return nameFiles;
 	}//fine metodo
 		
 	

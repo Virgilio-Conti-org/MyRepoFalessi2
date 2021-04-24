@@ -19,7 +19,7 @@ import vir.Help2;
  */
 public class CHURNmetric {
     
-	public void CalculateChurn() throws IOException, InterruptedException, SQLException {
+	public void calculateChurn() throws IOException, InterruptedException, SQLException {
 		
 		List<String> listFiles=new ArrayList<>();
 		String[] bufferSplit;		
@@ -55,7 +55,7 @@ public class CHURNmetric {
 			var size=listFiles.size();
 			
 			
-			for(var i=0;i<size;i++) {
+			for(var i=(size-1);i>=0;i--) {
 				
 				
 				if(listFiles.get(i).contains(fileName)) {

@@ -20,8 +20,6 @@ public class CommandGitShow {
 
 public List<String> commandGitShow(String commit) throws IOException, InterruptedException {
 		
-		List<String> errore=new ArrayList<>();
-		String lineErrore;
 		
 		List<String> resultOK=new ArrayList<>();
 		String lineOK;
@@ -44,18 +42,13 @@ public List<String> commandGitShow(String commit) throws IOException, Interrupte
 		
 		var process= pb.start();
 		
-		try(/*var isErrore =process.getErrorStream();
-			var isrErrore=new InputStreamReader( isErrore );		
-			var brErrore=new BufferedReader(isrErrore);*/
+		
 				
-			var isOK= process.getInputStream();		
+		try(var isOK= process.getInputStream();		
 			var isr=new InputStreamReader( isOK );		
 			var brOK=new BufferedReader(isr);
-					                                              ){
-			
-			/*while( (lineErrore=brErrore.readLine()) !=null) {
-				errore.add(lineErrore);
-			}*/
+					                                    ){
+						
 				
 			while( (lineOK=brOK.readLine()) !=null) {				
 					resultOK.add(lineOK);
@@ -63,16 +56,10 @@ public List<String> commandGitShow(String commit) throws IOException, Interrupte
 			}//while
 				
 						
-			int exit=process.waitFor();
-				
-			//if(exit==0) {
-				
-				return resultOK;
-			/*}
-			else {
-				
-				return errore;
-			}*/
+			process.waitFor();
+								
+			return resultOK;
+			
 		}//try 
 		
 	}//fine metodo

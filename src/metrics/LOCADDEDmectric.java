@@ -51,10 +51,10 @@ public class LOCADDEDmectric {
 		    var commit = rs.getString("Commit");
 		    
 		    listFiles=cmdgitShow.commandGitShow(commit);
-		    System.out.println(listFiles);
+		    //System.out.println(listFiles);
 			var size=listFiles.size();
 			
-			for(var i=0;i<size;i++) {
+			for(var i=(size-1);i>=0;i--) {
 				
 				if(listFiles.get(i).contains(fileName) ) {
 					foundFile=true;
@@ -69,6 +69,8 @@ public class LOCADDEDmectric {
 				if(foundFile && buffSplitHasRightLenght) {
 					
 					bufferSplit=listFiles.get(i).split("\t");
+					System.out.println(listFiles.get(i)+" "+commit+"  "+locAdded+"  "+bufferSplit.length);
+					
 					locAddedString=bufferSplit[0];
 					
 					locAddedString=specialCaseLOCaddedValue(locAddedString);

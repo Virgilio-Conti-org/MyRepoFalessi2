@@ -20,69 +20,41 @@ public class CHGSETSIZEmetric {
 
 	public void calculateChgSetSize() throws SQLException, IOException {
 		
-		var chgSetSize=0;
-		List<String> listFileWithSameCommit=new ArrayList<>();
-		var previousCommit="/";
+		var chgSetSize=0;		
 		String commit;
-		String fileName;
+		
 		
 		ResultSet rs;
 		
 		var db=new DB();
 		var conn=db.connectToDBtickectBugZookeeper();
 		
-		var query="SELECT * FROM \"ListJavaClasses\"  "+
-				 " ORDER BY \"Commit\"   "; 				
-				      
+		var query=" SELECT \"Commit\", COUNT(\"Commit\")  "+
+				  "FROM \"ListJavaClasses\"  "+
+				  "GROUP BY \"Commit\" ";
 		
 		
 		try(var stat=conn.prepareStatement(query) ){
 			rs=stat.executeQuery();
 		
-		
-		rs.next();
-		
-	    fileName=rs.getString("NameClass");
-		previousCommit=rs.getString("Commit");
-		
-		listFileWithSameCommit.add(fileName);
-    	chgSetSize=listFileWithSameCommit.size();
-		
-		
-        while( rs.next() ) {
+		  var c=0;
+          while( rs.next() ) {
+        	  c=c+1;
+        	  System.out.println(c);
         	
-        	fileName=rs.getString("NameClass");
-		    commit = rs.getString("Commit");
-		    
-            if(commit.equals(previousCommit)) {
-		    	
-		    	listFileWithSameCommit.add(fileName);
-		    	chgSetSize=listFileWithSameCommit.size();
-		    }//if
-            
-		    
-            else {
-		     	
-		       for(var j=0;j<listFileWithSameCommit.size();j++)	{
-		    	var queryUpdate="UPDATE \"ListJavaClasses\"  "+
-		                   "SET  \"ChgSetSize\"= "+chgSetSize+
-				           "WHERE \"NameClass\"= '"+listFileWithSameCommit.get(j) +"'" +" AND "+
-				           		 " \"Commit\"= '"+previousCommit+"'   " ;
+        	  commit=rs.getString("Commit");
+        	  chgSetSize=rs.getInt("count");
+        	  
+		      var queryUpdate="UPDATE \"ListJavaClasses\"  "+
+		                   " SET  \"ChgSetSize\"= "+chgSetSize+
+				           " WHERE  \"Commit\"= '"+commit+"'  ";
+				           		
 				
 				try(var statUpdate=conn.prepareStatement(queryUpdate)){
 			      statUpdate.executeUpdate();
 				}//try
-		       }//for	
-            	
-            	previousCommit=commit;
-		    	listFileWithSameCommit.clear();
-		    	
-		    	listFileWithSameCommit.add(fileName);
-		    	chgSetSize=0;
-		    }//if
-		    
-		    
-						
+		      	
+            						
 			
 		}//while
 		

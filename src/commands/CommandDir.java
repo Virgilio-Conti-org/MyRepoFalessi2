@@ -16,8 +16,7 @@ public class CommandDir {
 
 	public String dir(String fileJavaName,String pathRepoZookeeper) throws InterruptedException, IOException {
 		
-	   var errore="";
-	   String lineErrore;
+	   
 	   String lineOK;
 	   var pathJavaClass="";
 		
@@ -27,23 +26,18 @@ public class CommandDir {
 		                                        
 	   pb.directory( fromFolder);
        pb.command("cmd.exe","/c","dir",fileJavaName, "/b","/s");
-    	
+       pb.redirectErrorStream(true);	
+       
 	   var process= pb.start();
 
     		
 	
-       try(var isErrore =process.getErrorStream();
-           var isrErrore=new InputStreamReader( isErrore );		
-	       var brErrore=new BufferedReader(isrErrore);
-	
-	       var isOK= process.getInputStream();		
+       try(var isOK= process.getInputStream();		
 	       var isr=new InputStreamReader( isOK );		
 	       var brOK=new BufferedReader(isr);
 		                                              ){
 	
-	      while( (lineErrore=brErrore.readLine()) !=null) {
-	          errore=errore.concat(lineErrore);
-	     }
+	      
 	
 	     while( (lineOK=brOK.readLine()) !=null) {
 	      	 pathJavaClass=pathJavaClass.concat(lineOK);
@@ -52,14 +46,12 @@ public class CommandDir {
       }//try 
 	
 		
-	    int exit=process.waitFor();
+	    process.waitFor();
 	  
-	    if(exit==0) {
-	 	    return pathJavaClass;
-	    }
-	    else {
-	 	   return errore;
-	    }
+	   
+	    return pathJavaClass;
+	    
+	    
 	
 	}//fine metodo
 	

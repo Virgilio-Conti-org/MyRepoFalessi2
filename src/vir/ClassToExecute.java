@@ -5,6 +5,7 @@ package vir;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,51 +28,28 @@ public class ClassToExecute {
 	 * @throws IOException 
 	 * @throws InterruptedException 
 	 * @throws SQLException 
+	 * @throws ParseException 
 	 *
 	 *
 	 */
-	public static void main(String[] args) throws InterruptedException, IOException, SQLException   {
+	public static void main(String[] args) throws InterruptedException, IOException, SQLException, ParseException   {
 		/*String name="TestApacheCuratorCompatibility.java";
-		String name2="FatJarMain.java";
-		String path;
-		String locString;
-		int loc;
-		
-		Help2 h2=new Help2();
-		path=h2.getJavaPath(name2);
-		
-		System.out.println("in mezzo "+path );
-		
-		LOCmetric m= new LOCmetric();
-		System.out.println("in mezzo " );
-		locString=m.loc(path);
-		loc=m.getLOCfromStringLoc(locString);
+		String name2="FatJarMain.java";*/
 		
 		
-		
-		
-		System.out.println("locString = "+locString);
-		System.out.println("loc = "+loc);*/
-		
-		/*CHGSETSIZEmetric ch=new CHGSETSIZEmetric();
+		CHGSETSIZEmetric ch=new CHGSETSIZEmetric();
 		ch.calculateChgSetSize();
-		System.out.print("fine 1");*/
+		System.out.println("fine1");	
 		
 		/*CHURNmetric cr=new CHURNmetric();
-		cr.CalculateChurn();
-		System.out.print("fine 2");*/
+		cr.calculateChurn();
+		System.out.println("fine2");*/
 		
-		LOCADDEDmectric lm=new LOCADDEDmectric();
-		lm.calculateLocAdded();
-		System.out.print("fine 3");
-		//Logger.getLogger("MyLogger").info("fine");
+		/*LOCADDEDmectric la=new LOCADDEDmectric();
+		la.calculateLocAdded();
+		System.out.println("fine3");*/
 		
-		/*List<String> l=new ArrayList<>();
-		String com="b4b73a37d43413efdf50427f96aab2720af11baf";
-		
-		CommandGitShow c=new CommandGitShow();
-		l=c.commandGitShow(com);
-		System.out.println(l);*/
+		System.out.println("fine");	
 		//Logger.getLogger("MyLogger").info("fine");
 		
 	}
