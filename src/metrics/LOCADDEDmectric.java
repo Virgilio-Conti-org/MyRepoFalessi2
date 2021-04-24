@@ -50,8 +50,7 @@ public class LOCADDEDmectric {
 			var fileName=rs.getString("NameClass");
 		    var commit = rs.getString("Commit");
 		    
-		    listFiles=cmdgitShow.commandGitShow(commit);
-		    //System.out.println(listFiles);
+		    listFiles=cmdgitShow.commandGitShow(commit);		   
 			var size=listFiles.size();
 			
 			for(var i=(size-1);i>=0;i--) {
@@ -105,66 +104,69 @@ public class LOCADDEDmectric {
 		var h2=new Help2();
 		var locAddedMax=0;
 		var locAddedAvg=0;
+		var locAdded=0;
 		List<Integer> locAddedSizes=new ArrayList<>();
 		
-		var previousFile="/";
 		
-		ResultSet rs;
+		ResultSet rsOccorrenzeFiles;
+		ResultSet rsDataForCalculation;
 		
 		var db=new DB();
 		var conn=db.connectToDBtickectBugZookeeper();
 		
-		var query="SELECT * FROM \"ListJavaClasses\"  "+
-				 " ORDER BY \"NameClass\" , \"DateCommit\" ASC "; 				
+		var query="SELECT \"NameClass\",COUNT(\"NameClass\") "+
+				  "FROM \"ListJavaClasses\"  "+
+				  "WHERE \"NameClass\" like '%.java'  "+
+				  "GROUP BY \"NameClass\"   ";			
 				      
 		
 		
 		try(var stat=conn.prepareStatement(query) ){
-			rs=stat.executeQuery();
+		  rsOccorrenzeFiles=stat.executeQuery();
 		
-		
-		rs.next();
-		previousFile=rs.getString("NameClass");
-		
-		
-        while( rs.next() ) {
+			
+          while( rsOccorrenzeFiles.next() ) {
         	
-			var fileName=rs.getString("NameClass");
-			var dateCommit=rs.getString("DateCommit");
-		    var locAdded = rs.getInt("LOCadded");
+			 var fileName=rsOccorrenzeFiles.getString("NameClass");
+			 
 			
-		    
-		    if(!fileName.equals(previousFile)) {
-		    	previousFile=fileName;
-		    	
-		    	locAddedMax=h2.findMax(locAddedSizes);
-		    	locAddedAvg=h2.findAvg(locAddedSizes);
-		    	
-		    	var queryUpdate="UPDATE \"ListJavaClasses\"  "+
-		                   "SET  \"MaxLOCAdded\"= "+locAddedMax+" ,"+
-		                   "     \"AvgLOCAdded\"= "+locAddedAvg+" "+
-				           "WHERE \"NameClass\"= '"+fileName +"'" +" AND "+
-				           		 " \"DateCommit\"= '"+dateCommit+"'   " ;
-				
-				try(var statUpdate=conn.prepareStatement(queryUpdate)){
-			      statUpdate.executeUpdate();
-				}
-		    	
-				locAddedSizes.clear();
-				locAddedMax=0;
-				locAddedAvg=0;
-		    }//if
-		    
-		    if(fileName.equals(previousFile)) {
-		    	locAddedSizes.add(locAdded);
-		    	
-		    }//if
-						
+			 var query2=" SELECT * "+
+			 	   " FROM \"ListJavaClasses\"  "+
+			 	   " WHERE \"NameClass\" = '"+fileName+"'    "+
+			 	   " ORDER BY \"NameClass\" , \"DateCommit\"  ASC ";
+			 		
+			 try(var stat2=conn.prepareStatement(query2) ){
+			   rsDataForCalculation=stat2.executeQuery();
+			   
+			   var commit=rsDataForCalculation.getString("Commit");
+			   locAdded=rsDataForCalculation.getInt("LOCadded"); 
+			   
+			   while(rsDataForCalculation.next()) {
+				  locAddedSizes.add(locAdded);
+				  
+				  locAddedMax=h2.findMax(locAddedSizes);				  
+				  locAddedAvg=h2.findAvg(locAddedSizes);
+				  
+				  var queryUpd="UPDATE \"ListJavaClasses\" "+
+				                "SET \"LOCaddedMax\"="+locAddedMax+" , "+
+						        "    \"LOCaddedAvg\"="+locAddedAvg+"  "+
+						        "WHERE  \"NameClass\"='"+fileName+"'  AND "+
+						        "       \"Commit\"='"+commit+"' ";
+				  
+				  try(var statUpd=conn.prepareStatement(queryUpd) ){
+					   statUpd.executeUpdate();
+				  }
+				  
+			    }//while interno
+			 }//try
+			 
+			 		 
 			
-		}//while
-	
+		}//while estreno
 		
-    }//try
+	}//try esterno
+		
+		
 		
 }//fine metodo
 	

@@ -50,8 +50,7 @@ public class CHURNmetric {
 			var fileName=rs.getString("NameClass");
 		    var commit = rs.getString("Commit");
 		    
-		    listFiles=cmdgitShow.commandGitShow(commit);
-		    //System.out.println(listFiles);		    
+		    listFiles=cmdgitShow.commandGitShow(commit);		    
 			var size=listFiles.size();
 			
 			
@@ -111,64 +110,71 @@ public class CHURNmetric {
 		var h2=new Help2();
 		var churnMax=0;
 		var churnAvg=0;
+		var churn=0;
 		List<Integer> churnSizes=new ArrayList<>();
+				
 		
-		var previousFile="/";
-		
-		ResultSet rs;
+		ResultSet rsOccorrenzeFiles;
+		ResultSet rsDataForCalculation;
 		
 		var db=new DB();
 		var conn=db.connectToDBtickectBugZookeeper();
 		
-		var query="SELECT * FROM \"ListJavaClasses\"  "+
-				 " ORDER BY \"NameClass\" , \"DateCommit\" ASC "; 				
+		var query="SELECT \"NameClass\",COUNT(\"NameClass\") "+
+				  "FROM \"ListJavaClasses\"  "+
+				  "WHERE \"NameClass\" like '%.java'  "+
+				  "GROUP BY \"NameClass\"   ";			
 				      
-				
+		
+		
 		try(var stat=conn.prepareStatement(query) ){
-			rs=stat.executeQuery();
+		  rsOccorrenzeFiles=stat.executeQuery();
 		
-		
-		rs.next();
-		previousFile=rs.getString("NameClass");
-		
-		
-        while( rs.next() ) {
+			
+          while( rsOccorrenzeFiles.next() ) {
         	
-			var fileName=rs.getString("NameClass");
-			var dateCommit=rs.getString("DateCommit");
-		    var churn = rs.getInt("Churn");
+			 var fileName=rsOccorrenzeFiles.getString("NameClass");
+			 
 			
-		    
-		    if(!fileName.equals(previousFile)) {
-		    	previousFile=fileName;
-		    	
-		    	churnMax=h2.findMax(churnSizes);
-		    	churnAvg=h2.findAvg(churnSizes);
-		    	
-		    	var queryUpdate="UPDATE \"ListJavaClasses\"  "+
-		                   "SET  \"MaxChurn\"= "+churnMax+" ,"+
-		                   "     \"AvgChurn\"= "+churnAvg+" "+
-				           "WHERE \"NameClass\"= '"+fileName +"'" +" AND "+
-				           		 " \"DateCommit\"= '"+dateCommit+"'   " ;
-				
-				try(var statUpdate=conn.prepareStatement(queryUpdate)){
-			      statUpdate.executeUpdate();
-				}
-		    	
-		    	churnSizes.clear();
-		    	churnMax=0;
-		    	churnAvg=0;
-		    }//if
-		    
-		    if(fileName.equals(previousFile)) {
-		    	churnSizes.add(churn);
-		    	
-		    }//if
-						
+			 var query2=" SELECT * "+
+			 	   " FROM \"ListJavaClasses\"  "+
+			 	   " WHERE \"NameClass\" = '"+fileName+"'    "+
+			 	   " ORDER BY \"NameClass\" , \"DateCommit\"  ASC ";
+			 		
+			 try(var stat2=conn.prepareStatement(query2) ){
+			   rsDataForCalculation=stat2.executeQuery();
+			   
+			   var commit=rsDataForCalculation.getString("Commit");
+			   churn=rsDataForCalculation.getInt("Churn"); 
+			   
+			   while(rsDataForCalculation.next()) {
+				  churnSizes.add(churn);
+				  
+				  churnMax=h2.findMax(churnSizes);
+				  churnAvg=h2.findAvg(churnSizes);
+				  
+				  var queryUpd="UPDATE \"ListJavaClasses\" "+
+				                "SET \"MaxChurn\"="+churnMax+" , "+
+						        "    \"AvgChurn\"="+churnAvg+"  "+
+						        "WHERE  \"NameClass\"='"+fileName+"'  AND "+
+						        "       \"Commit\"='"+commit+"' ";
+				  
+				  try(var statUpd=conn.prepareStatement(queryUpd) ){
+					   statUpd.executeUpdate();
+				  }
+				  
+			    }//while interno
+			 }//try
+			 
+			 
+			 
 			
-		}//while
+		}//while estreno
 		
-    }//try
+	}//try esterno
+		
+		
+       
 		
 }//fine metodo
 	

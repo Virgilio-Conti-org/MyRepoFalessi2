@@ -111,7 +111,7 @@ public class JavaClassesHandling {
 	
 	
 	public List<String> searchAndGetFileNames(String commit) throws IOException, InterruptedException {
-		List<String> commandResult=new ArrayList<>();
+		List<String> commandResult;
 		var sizeResult=0;
 		
 		List<String> nameFiles=new ArrayList<>();
