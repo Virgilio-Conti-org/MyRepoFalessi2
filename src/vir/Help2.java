@@ -3,12 +3,8 @@
  */
 package vir;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
-import commands.CommandDir;
 
 /**
  * @author Virgilio
@@ -16,25 +12,8 @@ import commands.CommandDir;
  */
 public class Help2 {
 
-	public String getJavaPath(String fileJavaName) throws IOException, InterruptedException {
-		
-		
-		var prop=new Properties();
 	
-		try(var fr = new FileReader("config")
-			                                        ){
-		   prop.load(fr);
-	    }
-		var pathRepoZookeeper=prop.getProperty("pathRepoZookeeper");
 		
-		var commandDir=new CommandDir();
-		
-		return commandDir.dir(fileJavaName, pathRepoZookeeper);
-		
-					
-	}//fine metodo
-	
-	
 	public int findMax(List<Integer> numbers) {
 		var max=numbers.get(0);
 		int temp;

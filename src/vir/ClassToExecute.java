@@ -5,17 +5,14 @@ package vir;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 
-import commands.CommandGitShow;
 import metrics.CHGSETSIZEmetric;
 import metrics.CHURNmetric;
 import metrics.LOCADDEDmectric;
-import metrics.LOCmetric;
+import metrics.NAUTHmetric;
+import metrics.NFIXmetric;
+import metrics.NRmetric;
 
 /**
  * @author Virgilio
@@ -27,30 +24,45 @@ public class ClassToExecute {
 	 * @param args
 	 * @throws IOException 
 	 * @throws InterruptedException 
-	 * @throws SQLException 
-	 * @throws ParseException 
+	 * @throws SQLException  
 	 *
 	 *
 	 */
-	public static void main(String[] args) throws InterruptedException, IOException, SQLException, ParseException   {
-		/*String name="TestApacheCuratorCompatibility.java";
-		String name2="FatJarMain.java";*/
+	public static void main(String[] args) throws IOException, SQLException, InterruptedException    {
+		
+		Logger log=Logger.getLogger("MyLogger");
+				
 		
 		
+				
 		CHGSETSIZEmetric ch=new CHGSETSIZEmetric();
 		ch.calculateChgSetSize();
-		System.out.println("fine1");	
+		ch.claculateMaxAndAvgChgSetSize();
+		log.info("fine1");
 		
-		/*CHURNmetric cr=new CHURNmetric();
+		CHURNmetric cr=new CHURNmetric();
 		cr.calculateChurn();
-		System.out.println("fine2");*/
+		cr.calculateMaxAndAvgChurn();
+		log.info("fine2");
 		
-		/*LOCADDEDmectric la=new LOCADDEDmectric();
+		LOCADDEDmectric la=new LOCADDEDmectric();
 		la.calculateLocAdded();
-		System.out.println("fine3");*/
+		la.calculateMaxAndAvgLocAdded();
+		log.info("fine3");
+
 		
-		System.out.println("fine");	
-		//Logger.getLogger("MyLogger").info("fine");
+		NAUTHmetric nau=new NAUTHmetric();
+		nau.caculateNAUTH();
+		log.info("fine4");
+		
+		NFIXmetric nf=new NFIXmetric();
+		nf.calculateNFIX();
+		log.info("fine5");
+		
+		NRmetric nr=new NRmetric();
+		nr.calculateNR();
+		log.info("fine6");
+		
 		
 	}
 

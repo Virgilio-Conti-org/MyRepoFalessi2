@@ -5,11 +5,8 @@ package vir;
 
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
@@ -109,19 +106,6 @@ public int dateBeforeDate(String myDate, String[] dates) throws ParseException {
 	}//fine metodo
 				
 	
-
-	
-	//metodo per creare un file csv 
-	public void createCSVfile(String path) throws FileNotFoundException {
-		
-		var fileW= new FileOutputStream(path);
-		var pw =new PrintWriter(fileW);
-		
-		pw.println("Version,NameJavaClass,1,2,3,4,5,6,7,8,9,10,11,12,Buggy,Buggy_p");
-		pw.flush();
-		pw.close();
-		
-	}
 	
 	//metodo che restituisce la data che permette di eliminare la metà delle releases 
 	public String  getRidOf50Relases( String percorso) throws IOException {

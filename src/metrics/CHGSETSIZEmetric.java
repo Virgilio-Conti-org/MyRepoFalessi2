@@ -63,7 +63,7 @@ public class CHGSETSIZEmetric {
 }//fine metodo
 	
 	
-	public void maxAndAvgChgSetSize() throws SQLException, IOException {
+	public void claculateMaxAndAvgChgSetSize() throws SQLException, IOException {
 		var h2=new Help2();
 		var chgSetSizeMax=0;
 		var chgSetSizeAvg=0;
@@ -87,7 +87,7 @@ public class CHGSETSIZEmetric {
 		try(var stat=conn.prepareStatement(query) ){
 		  rsOccorrenzeFiles=stat.executeQuery();
 		
-			
+		 	
           while( rsOccorrenzeFiles.next() ) {
         	
 			 var fileName=rsOccorrenzeFiles.getString("NameClass");
@@ -96,15 +96,17 @@ public class CHGSETSIZEmetric {
 			 var query2=" SELECT * "+
 			 	   " FROM \"ListJavaClasses\"  "+
 			 	   " WHERE \"NameClass\" = '"+fileName+"'    "+
-			 	   " ORDER BY \"NameClass\" , \"DateCommit\"  ASC ";
+			 	   " ORDER BY \"NameClass\" , \"DataCommit\"  ASC ";
 			 		
 			 try(var stat2=conn.prepareStatement(query2) ){
 			   rsDataForCalculation=stat2.executeQuery();
 			   
-			   var commit=rsDataForCalculation.getString("Commit");
-			   chgSetSize=rsDataForCalculation.getInt("ChgSetSize"); 
-			   
+			   			   
 			   while(rsDataForCalculation.next()) {
+				   
+				  var commit=rsDataForCalculation.getString("Commit");
+				  chgSetSize=rsDataForCalculation.getInt("ChgSetSize");  
+				   
 				  chgSetSizes.add(chgSetSize);
 				  
 				  chgSetSizeMax=h2.findMax(chgSetSizes);

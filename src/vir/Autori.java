@@ -37,7 +37,7 @@ public class Autori {
 			 while( (lineFile=br.readLine() ) !=null ) {
 					
 				if(lineFile.startsWith("commit") ) {
-					commit=lineFile.substring(6);
+					commit=lineFile.substring(7);
 					count=count+1;
 					
 				}

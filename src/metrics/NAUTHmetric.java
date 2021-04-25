@@ -3,11 +3,14 @@
  */
 package metrics;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import vir.DB;
 
 /**
  * @author Virgilio
@@ -15,79 +18,89 @@ import java.util.List;
  */
 public class NAUTHmetric {
 
-	public int nauth(String pathLogGit, String javaClassName) throws  IOException {
-		String lineFile;
-		String author;
-		boolean isCommitted;
+	public void caculateNAUTH() throws  IOException, SQLException {
+		
+		String javaClass;
+		String autore;
+		String commit;
+		String dataCommit;
+		var nAuth=0;
 		List<String> listAuthors=new ArrayList<>();
-		List<String> listAuthorsNoDuplicates=new ArrayList<>();
 		
 		
-		try (var fr=new FileReader(pathLogGit);
-			 var br=new BufferedReader(fr);
-						                                   ){
-						 			
-		    while( (lineFile=br.readLine() ) !=null ) {
-								
-				if(lineFile.startsWith("Author ") ) {
-					
-				   author=lineFile.substring(8); 				
-				   isCommitted=checkIfAuthorCommittedJavaClass(author, br, javaClassName);
-				   
-				   if(isCommitted) {
-					  listAuthors.add(author); 
-				   }
-				  
-			     }//if esterno
-							
-								
-			}//while
-	    }//try
+		ResultSet rsJavaClasses;
+		ResultSet rsJavaClasses2;
+		var db=new DB();
+		var conn=db.connectToDBtickectBugZookeeper();
 		
-		listAuthorsNoDuplicates=eliminaDuplicati(listAuthors);
+		var queryJavaClasses=" SELECT \"NameClass\",COUNT(\"NameClass\") "
+				+ "FROM \"ListJavaClasses\"   "
+				+ "WHERE \"NameClass\" LIKE '%.java'  "
+				+ "GROUP BY \"NameClass\" ";
 		
-		return listAuthorsNoDuplicates.size();
+		try(var stat=conn.prepareStatement(queryJavaClasses) ){
+			rsJavaClasses=stat.executeQuery();
 		
+		  
+          while( rsJavaClasses.next() ) {
+        	
+        	 javaClass=rsJavaClasses.getString("NameClass");
+        	 
+        	 // \"NameClass\",\"Name\",\"Commit\",\"DataCommit\" 
+        	 var queryJavaClasses2=" SELECT  *  "   
+     				+ "FROM \"ListJavaClasses\"  AS jc  "
+        			+ "JOIN \"Autori\"  AS auth  "
+     				+ "ON  jc.\"Commit\"  =  auth.\"Commit\"    "
+     				+ "WHERE jc.\"NameClass\" = '"+javaClass+"'  "
+     				+ "ORDER BY jc.\"DataCommit\"  ASC   ";
+     		
+        	 try(var stat2=conn.prepareStatement(queryJavaClasses2) ){
+  			   rsJavaClasses2=stat2.executeQuery();
+  			   
+  			   			   
+  			   while(rsJavaClasses2.next()) {
+  				   
+  				     				   
+  				   autore=rsJavaClasses2.getString("Name");
+  				   commit=rsJavaClasses2.getString("Commit");
+  				   dataCommit=rsJavaClasses2.getString("DataCommit");
+  				   
+  				   listAuthors.add(autore);  				   
+  				   listAuthors=eliminaDuplicati(listAuthors);
+  				   
+  				   nAuth=listAuthors.size();
+  				   
+  				 var queryUpdate=" UPDATE \"ListJavaClasses\"  "
+	      		         + "SET \"NAuth\" = "+nAuth+"  "
+	    		         + "WHERE   \"NameClass\" = '"+javaClass+"' AND  "
+	    		         + "        \"Commit\" = '"+commit+"'  AND   "
+	                     + "        \"DataCommit\" = '"+dataCommit+"'    ";
+			           					
+		         try(var statUpdate=conn.prepareStatement(queryUpdate)){
+		            statUpdate.executeUpdate();
+		         }//try
+  				   
+  			   }//while
+  			   
+  			   listAuthors.clear();
+  			   
+  			 }//try
+        	 
+       		      	         						
+			
+		}//while
 		
+	}//try
 		
 		
 }//fine metodo
 	
 	
-	public boolean checkIfAuthorCommittedJavaClass(String str,BufferedReader br, String javaClassName) throws IOException {
-		   
-	   var lineFile=str;
-		   
-	   while(!lineFile.startsWith("commit")) {
-			 if(lineFile.contains(javaClassName)) {
-				return true;	 
-			 }	
-			 lineFile=br.readLine();
-	   }
-	   
-	  return false;
-		   
-}//fine metodo
+	
 	
 	public  List<String> eliminaDuplicati(List<String> autori){
-		
-		
-		for(var i=0;i<autori.size();i++) {
-			var elem=autori.get(i);
 			
-			for(var j=i+1;j<autori.size();j++) {
-				if( autori.contains(elem) ) {
-					
-					autori.remove(j);
-					j=j-1;
-				}
-				
-			}//for interno
-			
-		}//for esterno
-		
-		
-        return autori;
+        return autori.stream().distinct().collect(Collectors.toList());
 		
 	}//fine metodo
 	

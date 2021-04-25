@@ -3,9 +3,11 @@
  */
 package metrics;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import vir.DB;
 
 /**
  * @author Virgilio
@@ -13,46 +15,75 @@ import java.io.IOException;
  */
 public class NRmetric {
 
-	public int nr(String pathLogGit,String javaClassName) throws IOException {
-		String lineFile;
-		var nr=0;
+	public void calculateNR() throws IOException, SQLException {
 		
-		try (var fr=new FileReader(pathLogGit);
-		     var br=new BufferedReader(fr);
-					                                   ){
-					 			
-			  while( (lineFile=br.readLine() ) !=null ) {
-							
-				  if(lineFile.startsWith("Author ") ) {
-					  lineFile=br.readLine();
-					  
-					  nr=checkIfJavaClassIsCommitted(lineFile, br, javaClassName,nr);
-					  	  
-				  }
-						
-							
-			 }//while
-		 }//try
+		var nr=0;	
+		String javaClass;
+		String commit;
+		String dataCommit;
+				
+		ResultSet rsJavaClasses;
+		ResultSet rsJavaClasses2;
+		var db=new DB();
+		var conn=db.connectToDBtickectBugZookeeper();
 		
-		return nr;
+		var queryJavaClasses=" SELECT \"NameClass\",COUNT(\"NameClass\") "
+				+ "FROM \"ListJavaClasses\"   "
+				+ "WHERE \"NameClass\" LIKE '%.java'  "
+				+ "GROUP BY \"NameClass\" ";
 		
+		try( var stat=conn.prepareStatement(queryJavaClasses) 			 
+					                                           ){
+		  rsJavaClasses=stat.executeQuery();
+		  
+		  var c=0;
+          while( rsJavaClasses.next() ) {
+        	
+        	 javaClass=rsJavaClasses.getString("NameClass");
+        	 
+        	 var queryJavaClasses2=" SELECT *  "
+     				+ "FROM \"ListJavaClasses\"    "
+     				+ "WHERE \"NameClass\" = '"+javaClass+"'  "
+     				+ "ORDER BY \"DataCommit\"  ASC   ";
+     		
+        	 try(var stat2=conn.prepareStatement(queryJavaClasses2) ){
+  			   rsJavaClasses2=stat2.executeQuery();
+  			   
+  			   			   
+  			   while(rsJavaClasses2.next()) {
+  				 System.out.println(c++);
+  				   
+  				 commit=rsJavaClasses2.getString("Commit");
+  				 dataCommit=rsJavaClasses2.getString("DataCommit");
+  				   
+  				 nr=nr+1;  
+  				 
+  				 var queryUpdate=" UPDATE \"ListJavaClasses\" "
+	      		         + "SET \"NR\" = "+nr+"  "
+	    		         + "WHERE  \"NameClass\" = '"+javaClass+"' AND  "
+	    		         + "        \"Commit\"='"+commit+"'  AND   "
+	                     + "        \"DataCommit\"='"+dataCommit+"'    ";
+			           					
+		         try(var statUpdate=conn.prepareStatement(queryUpdate)){
+		            statUpdate.executeUpdate();
+		         }//try
+  				   
+  			   }//while
+  			   
+  			   nr=0;
+  			 }//try
+        	 
+     		      	         						
+			
+		}//while
 		
-	}//fine metodo
 	
-	
-   public int checkIfJavaClassIsCommitted(String str,BufferedReader br, String javaClassName,int nr) throws IOException {
-	   
-	   var lineFile=str;
-	   
-	   while(!lineFile.startsWith("commit")) {
-			  if(lineFile.contains(javaClassName)) {
-				 nr=nr+1; 
-			  }
-			  lineFile=br.readLine();
-	   
-	   }
-	   return nr;
-	   
-   }//fine metodo
+	}//try	
+		
+		
+		
+		
+}//fine metodo
+
 	
 }

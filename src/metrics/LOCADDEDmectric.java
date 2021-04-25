@@ -68,7 +68,7 @@ public class LOCADDEDmectric {
 				if(foundFile && buffSplitHasRightLenght) {
 					
 					bufferSplit=listFiles.get(i).split("\t");
-					System.out.println(listFiles.get(i)+" "+commit+"  "+locAdded+"  "+bufferSplit.length);
+					
 					
 					locAddedString=bufferSplit[0];
 					
@@ -100,7 +100,7 @@ public class LOCADDEDmectric {
 }//fine metodo
 	
 	
-	public void maxAndAvgLocAdded() throws SQLException, IOException {
+	public void calculateMaxAndAvgLocAdded() throws SQLException, IOException {
 		var h2=new Help2();
 		var locAddedMax=0;
 		var locAddedAvg=0;
@@ -124,32 +124,34 @@ public class LOCADDEDmectric {
 		try(var stat=conn.prepareStatement(query) ){
 		  rsOccorrenzeFiles=stat.executeQuery();
 		
-			
+		  		
           while( rsOccorrenzeFiles.next() ) {
-        	
+        	          	
 			 var fileName=rsOccorrenzeFiles.getString("NameClass");
 			 
 			
 			 var query2=" SELECT * "+
 			 	   " FROM \"ListJavaClasses\"  "+
 			 	   " WHERE \"NameClass\" = '"+fileName+"'    "+
-			 	   " ORDER BY \"NameClass\" , \"DateCommit\"  ASC ";
+			 	   " ORDER BY \"NameClass\" , \"DataCommit\"  ASC ";
 			 		
 			 try(var stat2=conn.prepareStatement(query2) ){
 			   rsDataForCalculation=stat2.executeQuery();
-			   
-			   var commit=rsDataForCalculation.getString("Commit");
-			   locAdded=rsDataForCalculation.getInt("LOCadded"); 
+			    
 			   
 			   while(rsDataForCalculation.next()) {
+				   
+				  var commit=rsDataForCalculation.getString("Commit");
+				  locAdded=rsDataForCalculation.getInt("LOCadded");
+				   
 				  locAddedSizes.add(locAdded);
 				  
 				  locAddedMax=h2.findMax(locAddedSizes);				  
 				  locAddedAvg=h2.findAvg(locAddedSizes);
 				  
 				  var queryUpd="UPDATE \"ListJavaClasses\" "+
-				                "SET \"LOCaddedMax\"="+locAddedMax+" , "+
-						        "    \"LOCaddedAvg\"="+locAddedAvg+"  "+
+				                "SET \"MaxLOCadded\"="+locAddedMax+" , "+
+						        "    \"AvgLOCadded\"="+locAddedAvg+"  "+
 						        "WHERE  \"NameClass\"='"+fileName+"'  AND "+
 						        "       \"Commit\"='"+commit+"' ";
 				  

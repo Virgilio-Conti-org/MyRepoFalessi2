@@ -39,7 +39,7 @@ public class CommitTicket {
 					
 				
 				if(lineFile.startsWith("commit") ) {
-					commit=lineFile.substring(6);
+					commit=lineFile.substring(7);
 										
 				}
 				
@@ -51,7 +51,7 @@ public class CommitTicket {
 				if(lineFile.contains("ZOOKEEPER-")  ) {
 					ticket=help.projectStringTicket(lineFile);
 					String queryInsert="INSERT INTO \"CommitTickets\" ( \"Commit\" ,\"TicketID\" ,\"Data\")  "+
-							"VALUES ( '"+commit+"' ,' "+ticket+" ',' "+date+" ' )";
+							"VALUES ( '"+commit+"' ,'"+ticket+"','"+date+"' )";
 					
 					try(PreparedStatement statUpdate=con.prepareStatement(queryInsert) ){
 					statUpdate.executeUpdate();

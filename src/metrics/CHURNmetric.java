@@ -68,11 +68,11 @@ public class CHURNmetric {
 				}
 				if(foundFile && buffSplitHasRightLenght) {
 					bufferSplit=listFiles.get(i).split("\t");
-					System.out.println(listFiles.get(i)+" "+commit+"  "+locAdded+"  "+locDeleted+" "+bufferSplit.length);
+					
 					
 					locAdded=bufferSplit[0];
 					locDeleted=bufferSplit[1];
-					//var fileName=bufferSplit[2];
+					
 					
 					locAdded=specialCaseChurnValuselocAdded(locAdded);
 					locDeleted=specialCaseChurnValuselocDeleted(locDeleted);
@@ -106,7 +106,7 @@ public class CHURNmetric {
 }//fine metodo 
 	
 	
-	public void maxAndAvgChurn() throws SQLException, IOException {
+	public void calculateMaxAndAvgChurn() throws SQLException, IOException {
 		var h2=new Help2();
 		var churnMax=0;
 		var churnAvg=0;
@@ -130,24 +130,26 @@ public class CHURNmetric {
 		try(var stat=conn.prepareStatement(query) ){
 		  rsOccorrenzeFiles=stat.executeQuery();
 		
-			
+		  		
           while( rsOccorrenzeFiles.next() ) {
-        	
+                    	      	  
 			 var fileName=rsOccorrenzeFiles.getString("NameClass");
 			 
 			
 			 var query2=" SELECT * "+
 			 	   " FROM \"ListJavaClasses\"  "+
 			 	   " WHERE \"NameClass\" = '"+fileName+"'    "+
-			 	   " ORDER BY \"NameClass\" , \"DateCommit\"  ASC ";
+			 	   " ORDER BY \"NameClass\" , \"DataCommit\"  ASC ";
 			 		
 			 try(var stat2=conn.prepareStatement(query2) ){
 			   rsDataForCalculation=stat2.executeQuery();
-			   
-			   var commit=rsDataForCalculation.getString("Commit");
-			   churn=rsDataForCalculation.getInt("Churn"); 
+			   		   
 			   
 			   while(rsDataForCalculation.next()) {
+				   
+				  var commit=rsDataForCalculation.getString("Commit");
+				  churn=rsDataForCalculation.getInt("Churn");  
+				   
 				  churnSizes.add(churn);
 				  
 				  churnMax=h2.findMax(churnSizes);
