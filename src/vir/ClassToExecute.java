@@ -30,11 +30,9 @@ public class ClassToExecute {
 	 */
 	public static void main(String[] args) throws IOException, SQLException, InterruptedException    {
 		
-		Logger log=Logger.getLogger("MyLogger");
+		var log=Logger.getLogger("MyLogger");
 				
-		
-		
-				
+					
 		CHGSETSIZEmetric ch=new CHGSETSIZEmetric();
 		ch.calculateChgSetSize();
 		ch.claculateMaxAndAvgChgSetSize();

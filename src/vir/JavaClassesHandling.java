@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import commands.CommandGitShow;
+import database.DB;
+import helper.Help;
 
 /**
  * @author Virgilio
@@ -65,10 +67,9 @@ public class JavaClassesHandling {
 		  var fr=new FileReader(fileLogGit);
 		  var br=new BufferedReader(fr);			
 		                                           ){
-			 //int c=0;
+			 
 			 while( (line=br.readLine() ) !=null ) {
-				//c=c+1;
-				//System.out.println(c);	
+					
 				 if(line.startsWith("commit") ) {
 						commit=line.substring(7);
 						

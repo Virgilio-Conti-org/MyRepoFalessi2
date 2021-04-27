@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import commands.CommandGitShow;
-import vir.DB;
-import vir.Help2;
+import database.DB;
+import helper.Help2;
 
 /**
  * @author Virgilio

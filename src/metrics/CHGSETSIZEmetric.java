@@ -9,8 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import vir.DB;
-import vir.Help2;
+import database.DB;
+import helper.Help2;
 
 /**
  * @author Virgilio

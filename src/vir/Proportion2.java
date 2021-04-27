@@ -9,6 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import database.DB;
+import helper.Help;
+
 
 /**
  * @author Virgilio

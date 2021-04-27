@@ -15,6 +15,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import database.DB;
+import helper.Help;
+
 /**
  * @author Virgilio
  *

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vir;
+package database;
 
 
 import java.io.FileReader;

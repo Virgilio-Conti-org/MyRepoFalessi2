@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import vir.DB;
+import database.DB;
 
 /**
  * @author Virgilio

@@ -7,7 +7,8 @@ package metrics;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import vir.DB;
+
+import database.DB;
 
 /**
  * @author Virgilio
@@ -36,7 +37,7 @@ public class NRmetric {
 					                                           ){
 		  rsJavaClasses=stat.executeQuery();
 		  
-		  var c=0;
+		 
           while( rsJavaClasses.next() ) {
         	
         	 javaClass=rsJavaClasses.getString("NameClass");
@@ -51,7 +52,7 @@ public class NRmetric {
   			   
   			   			   
   			   while(rsJavaClasses2.next()) {
-  				 System.out.println(c++);
+  				
   				   
   				 commit=rsJavaClasses2.getString("Commit");
   				 dataCommit=rsJavaClasses2.getString("DataCommit");
