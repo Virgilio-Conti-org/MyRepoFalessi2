@@ -16,13 +16,13 @@ public class Proportion {
 	
 	
 	//metodo che calcola il valore P secondo il metodo proportion 
-	public int calculateP(int fv, int ov,int iv) {
+	public Double calculateP(int fv, int ov,int iv) {
 	
 	//paramertri	
 	//fv=fixVersion ov=openigVersion  iv=InjectedVersion	
 		
 	//intero che conterrà il valore proportion calcolato
-		var p=0; 
+		var p=0.0; 
 		
 		
 		if(fv==ov) {
@@ -42,7 +42,7 @@ public class Proportion {
 	}
 	
 	//metodo che calcola il valore Injected Version 
-	public int calculateIV(int p,int fv, int ov) {
+	public int calculateIV(Double p,int fv, int ov) {
 		//paramertri	
 		//p=valore proportion fv=fixVersion ov=openigVersion  
 		
@@ -50,7 +50,7 @@ public class Proportion {
 		var iv=0;
 		
 		//formula per il calcolo della InjectedVersion
-		iv=fv-(fv-ov)*p;
+		iv=  fv-(fv-ov)* (p.intValue()) ;
 		
 		return iv;
 		

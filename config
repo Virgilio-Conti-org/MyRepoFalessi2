@@ -3,3 +3,8 @@ userid=postgres
 password=A6YhbvtE82
 pathFileTicketsBug=D:\\Libri\\Universita\\Falessi\\Repo\\RepoFalessi2\\MyRepoFalessi2\\TicketsTipoBugID.txt
 pathRepoZookeeper=D:\\Libri\\Universita\\Falessi\\Repo\\RepoZookeeper\\zookeeper
+fileTicketsBugWithFVOVdates="D:\\Libri\\Universita\\Falessi\\Repo\\RepoFalessi2\\MyRepoFalessi2\\TicketsBugWithFVOVdates.txt";
+fileAffectedVersionsZkTickectsBug="D:\\Libri\\Universita\\Falessi\\Repo\\RepoFalessi2\\MyRepoFalessi2\\AffectedVersionsZookeperTickectsBug.csv";
+fileInfoProg="D:\\Libri\\Universita\\Falessi\\Repo\\RepoFalessi2\\MyRepoFalessi2\\ZOOKEEPERVersionInfo.csv";
+
+

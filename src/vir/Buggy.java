@@ -24,6 +24,10 @@ public class Buggy {
 		String dataCommit;
 		String dataOpenVersion;
 		String dataAffectedVersion;
+		
+		var check1=false;
+		var check2=false;
+		
 		var sdf= new SimpleDateFormat("yyyy-MM-dd");
 				
 		
@@ -35,20 +39,21 @@ public class Buggy {
 		
 		var queryBuggy=" SELECT *  "
 			       	 + "FROM \"CommitTickets\"  AS ct "
-			       	 + "JOIN \"Ticket_FV_OV\"  AS fvov  "
+			       	 + "JOIN \"Tickect_FV_OV\"  AS fvov  "
 			       	 + "ON ct.\"TicketID\" = fvov.\"TicketBugID\"  "
 			       	 + "JOIN \"ListJavaClasses\"  AS ljc  "
 			       	 + "ON  ljc.\"Commit\" = ct.\"Commit\"  "
-			       	 + "WHERE ljc.\"NameClass\"  LIKE '%.java'  ";
+			       	 + "WHERE ljc.\"NameClass\"  LIKE '%.java'  "
+			       	 + "      AND fvov.\"DateAffectedVersion\" is not null "
+			       	 + "      AND fvov.\"ProportionValue\" >= 1     ";
 		
-		
-		
-		
+				
 		try(var stat=conn.prepareStatement(queryBuggy) ){
 			  rsBuggy=stat.executeQuery();
 			
-			 	
+			 
 	          while( rsBuggy.next() ) {
+	        	  
 	        	  
 	        	  javaClassName=rsBuggy.getString("NameClass");
 	        	  commit=rsBuggy.getString("Commit");
@@ -62,6 +67,14 @@ public class Buggy {
 	        	  var dataIV =sdf.parse(dataAffectedVersion);
 	        	  
 	        	  if(dataCom.after(dataIV) && dataCom.before(dataOV) ) {
+	        		  check1=true;
+	        	  }
+                  if(dataCom.equals(dataIV) || dataCom.equals(dataOV) ) {
+                	  check2=true;
+	        	  }
+                  if(check1 || check2) {
+                	  
+                	  
 	        		  var queryUpdate="UPDATE \"ListJavaClasses\"  "
 				        	  + "SET \"Buggy\" = 'yes'  "
 				        	  + "WHERE \"NameClass\" = '"+javaClassName+"'  AND  "
@@ -71,7 +84,9 @@ public class Buggy {
 	        			  statUpd.executeUpdate();
 	        		  }	  
 		        	   
-		          }
+	        		 check1=false;
+	        		 check2=false;
+		          }//if
 	        	  
 	          }//while
 		           

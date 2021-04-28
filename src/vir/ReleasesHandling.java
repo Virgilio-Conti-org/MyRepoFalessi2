@@ -8,8 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -110,9 +108,9 @@ public class ReleasesHandling {
 		int indexOpenVersion;
 		int lung;
 		
-		Help help=new Help();
-		DB db=new DB();
-		Connection conn=db.connectToDBtickectBugZookeeper();
+		var help=new Help();
+		var db=new DB();
+		var conn=db.connectToDBtickectBugZookeeper();
 		
 		
 		var path= Paths.get(fileInfoProject);		
@@ -138,6 +136,7 @@ public class ReleasesHandling {
 		                                            ){
 			   
 			while( (lineFile=br.readLine() ) !=null ) {
+			  	
 			   buffSlipt=lineFile.split(",");
 			   ticket=buffSlipt[0];
 			   
@@ -150,17 +149,19 @@ public class ReleasesHandling {
 			   versioneFix= versions[indexFixVersion] ;
 			   versioneOpen=versions[indexOpenVersion] ;
 			
-			   String queryUPD="UPDATE  Tickect_FV_OV  "+
-						"SET  \"FV\" ="+versioneFix+", "+
-						"     \"OP\"= "+versioneOpen+
-				        "WHERE \"TicketBugID\"=  '"+ticket +"'";
+			   var queryUPD="INSERT INTO  \"Tickect_FV_OV\"  "
+						+" (\"TicketBugID\", \"DateFixVersion\", \"DateOpenVersion\", \"FV\", "
+					    +"  \"OP\", \"ProportionValue\", \"AffectedVersion\", \"DateAffectedVersion\" )  "
+					    +" VALUES ('"+ticket+"','"+resolutionDate+"','"+createdDate+"',"
+					    +"         '"+versioneFix+"','"+versioneOpen+"',null,null,null)";
+							
 			   
-			   try(PreparedStatement statUpdate=conn.prepareStatement(queryUPD)){
+			   try(var statUpdate=conn.prepareStatement(queryUPD)){
 				    statUpdate.executeUpdate();
 				}
 			   
 				   
-			}
+			}//while
 					
 		  }//try
 		   
@@ -178,8 +179,8 @@ public class ReleasesHandling {
 		String dateInjectedVersion;
 		String injectedVersion; //indice numerico intero
 		
-		DB db=new DB();
-		Connection con=db.connectToDBtickectBugZookeeper();
+		var db=new DB();
+		var con=db.connectToDBtickectBugZookeeper();
 		
 		
 		for(var i=0;i<dataInjectedVersions.size() ;i++) {
@@ -189,13 +190,12 @@ public class ReleasesHandling {
 		  injectedVersion=buffer[2];
 		  
 		  
-		  String queryUPD="UPDATE  \"Tickect_FV_OV\" "+
-				"SET  \"DateAffectedVersion\" ='"+dateInjectedVersion+"', "+
-					  "\"AffectedVersion\"= "+injectedVersion+
-		        "WHERE \"TicketBugID\"=  '"+ticket +"'";
-		
-		  
-		try(PreparedStatement stat=con.prepareStatement(queryUPD) ){
+		  var queryUPD="INSERT INTO \"TicketWithAffectedVersion\"  "
+				+" (\"TicketBugID\",\"VersionDate\",\"AffectedVersion\",\"ProportionValue\")  "
+		  		+"VALUES ( '"+ticket+"','"+dateInjectedVersion+"','"+injectedVersion+"', null ) ";
+				 
+		      		  
+		try(var stat=con.prepareStatement(queryUPD) ){
 			stat.executeUpdate();
 		}
 		

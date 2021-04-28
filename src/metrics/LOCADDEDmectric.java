@@ -31,24 +31,23 @@ public class LOCADDEDmectric {
 		var buffSplitHasRightLenght=false; 
 		
 		var cmdgitShow=new  CommandGitShow();
-	
 		
 		var db=new DB();
 		var conn=db.connectToDBtickectBugZookeeper();
-		ResultSet rs;
+		ResultSet rsLocAdded;
 		
-		var query="SELECT * FROM \"ListJavaClasses\" "+
+		var queryForClasses="SELECT * FROM \"ListJavaClasses\" "+
 				 " WHERE \"NameClass\" LIKE '%.java' ";
 			
 		
-		try(var stat=conn.prepareStatement(query) ){
-			rs=stat.executeQuery();
+		try(var stat=conn.prepareStatement(queryForClasses) ){
+			rsLocAdded=stat.executeQuery();
 		
 				
-        while( rs.next() ) {
+        while( rsLocAdded.next() ) {
         	
-			var fileName=rs.getString("NameClass");
-		    var commit = rs.getString("Commit");
+			var fileName=rsLocAdded.getString("NameClass");
+		    var commit = rsLocAdded.getString("Commit");
 		    
 		    listFiles=cmdgitShow.commandGitShow(commit);		   
 			var size=listFiles.size();
@@ -106,13 +105,13 @@ public class LOCADDEDmectric {
 		var locAddedAvg=0;
 		var locAdded=0;
 		List<Integer> locAddedSizes=new ArrayList<>();
-		
-		
+				
 		ResultSet rsOccorrenzeFiles;
-		ResultSet rsDataForCalculation;
 		
-		var db=new DB();
-		var conn=db.connectToDBtickectBugZookeeper();
+		ResultSet rsDataCalculation;
+		
+		var database=new DB();		
+		var con= database.connectToDBtickectBugZookeeper();
 		
 		var query="SELECT \"NameClass\",COUNT(\"NameClass\") "+
 				  "FROM \"ListJavaClasses\"  "+
@@ -121,41 +120,42 @@ public class LOCADDEDmectric {
 				      
 		
 		
-		try(var stat=conn.prepareStatement(query) ){
+		try(var stat=con.prepareStatement(query) ){
 		  rsOccorrenzeFiles=stat.executeQuery();
 		
 		  		
           while( rsOccorrenzeFiles.next() ) {
         	          	
-			 var fileName=rsOccorrenzeFiles.getString("NameClass");
+			 var nameFile=rsOccorrenzeFiles.getString("NameClass");
 			 
 			
-			 var query2=" SELECT * "+
+			 var secondQuery=" SELECT * "+
 			 	   " FROM \"ListJavaClasses\"  "+
-			 	   " WHERE \"NameClass\" = '"+fileName+"'    "+
+			 	   " WHERE \"NameClass\" = '"+nameFile+"'    "+
 			 	   " ORDER BY \"NameClass\" , \"DataCommit\"  ASC ";
 			 		
-			 try(var stat2=conn.prepareStatement(query2) ){
-			   rsDataForCalculation=stat2.executeQuery();
+			 try(var stat2=con.prepareStatement(secondQuery) ){
+				 
+			   rsDataCalculation=stat2.executeQuery();
 			    
 			   
-			   while(rsDataForCalculation.next()) {
+			   while(rsDataCalculation.next()) {
 				   
-				  var commit=rsDataForCalculation.getString("Commit");
-				  locAdded=rsDataForCalculation.getInt("LOCadded");
+				  var commit=rsDataCalculation.getString("Commit");
+				  locAdded=rsDataCalculation.getInt("LOCadded");
 				   
 				  locAddedSizes.add(locAdded);
 				  
 				  locAddedMax=h2.findMax(locAddedSizes);				  
 				  locAddedAvg=h2.findAvg(locAddedSizes);
 				  
-				  var queryUpd="UPDATE \"ListJavaClasses\" "+
+				  var queryUPD="UPDATE \"ListJavaClasses\" "+
 				                "SET \"MaxLOCadded\"="+locAddedMax+" , "+
 						        "    \"AvgLOCadded\"="+locAddedAvg+"  "+
-						        "WHERE  \"NameClass\"='"+fileName+"'  AND "+
+						        "WHERE  \"NameClass\"='"+nameFile+"'  AND "+
 						        "       \"Commit\"='"+commit+"' ";
 				  
-				  try(var statUpd=conn.prepareStatement(queryUpd) ){
+				  try(var statUpd=con.prepareStatement(queryUPD) ){
 					   statUpd.executeUpdate();
 				  }
 				  

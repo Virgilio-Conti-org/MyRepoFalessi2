@@ -5,7 +5,6 @@ package vir;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -25,118 +24,183 @@ public class Proportion2 {
 	private DB db;
 	
 	public void calculatePticketsWithoutAffectedVersion() throws SQLException, IOException{
-		Connection con;
-		
+			
 		ResultSet rsTicketsNOaffectedVerion;
 		ResultSet rsTicketsWITHaffectedVerion;
 		
-		Help help=new Help();
+		var help=new Help();
 		var movWindow=help.numberOfTicketsBug()/100;
 		var count=0;
-		var p=0;
+		var p=0.0;
 		
 		if(movWindow==0) {
 			return;
 		}
 		
-		Proportion  proportion1=new Proportion();
+		var  proportion1=new Proportion();
 		String ticketID;
 		
-		String queryTicketsNOaffectedVerion="SELECT * FROM \"Tickect_FV_OV\" as t_FV_OV" + 
-				 
-				"WHERE NOT EXISTS ( SELECT * " + 
-				"                   FROM \"TicketWithAffectedVersion\" AS twAV" + 
-				"                   WHERE t_FV_OV.\"TicketBugID\"=twAV.\"TicketBugID\" )"+
-				"ORDER BY \"DateFixVersion\" DESC ";
+		var queryTicketsNOaffectedVerion="SELECT * FROM \"Tickect_FV_OV\"  "
+				                           +"WHERE \"ProportionValue\" IS null  "  				 	                  
+				                           +"ORDER BY \"DateOpenVersion\" DESC ";
 		
-		String queryTicketsWITHaffectedVerion="SELECT * FROM \"TicketWithAffectedVersion\" as twAV "+ 
-				     
-				      "JOIN \"ZookeeperVersionsInfo\" as zk"+
-				      "on twAV.\"VersionName\"=zk.\"VersionName\" "+
-				      "ORDER BY zk.\"DateVersion\" DESC ";
-		
-		
-		
+			
+		Connection con;
 		db=new DB();
 		con=db.connectToDBtickectBugZookeeper();
 		
 		
-	try(PreparedStatement stat=con.prepareStatement(queryTicketsNOaffectedVerion) ){
+	try(var stat=con.prepareStatement(queryTicketsNOaffectedVerion) ){
 		rsTicketsNOaffectedVerion=stat.executeQuery();
-	}
-	     
-	try(PreparedStatement stat2=con.prepareStatement(queryTicketsWITHaffectedVerion) ){
-		rsTicketsWITHaffectedVerion=stat2.executeQuery();
-	}
-				
 		
-		while( rsTicketsNOaffectedVerion.next() ) {
+		
+        while( rsTicketsNOaffectedVerion.next() ) {
 			
+        	
+        	
 		    ticketID = rsTicketsNOaffectedVerion.getString("TicketBugID");
 		    
 			fixV=rsTicketsNOaffectedVerion.getInt("FV");
 			openV=rsTicketsNOaffectedVerion.getInt("OP");
-							
-			while(rsTicketsWITHaffectedVerion.next() && count<movWindow) {
-				p=p+rsTicketsWITHaffectedVerion.getInt("ProportionValue");
-				count=count+1;
+			var dateOpenV=rsTicketsNOaffectedVerion.getString("DateOpenVersion");
+			
+			
+			var queryTicketsWITHaffectedVerion="SELECT * FROM \"TicketWithAffectedVersion\"  "
+					  +"WHERE \"VersionDate\" <= '"+dateOpenV+"'  "
+            	      +"ORDER BY \"VersionDate\" DESC ";
+			
+			try(var stat2=con.prepareStatement(queryTicketsWITHaffectedVerion) ){
+				rsTicketsWITHaffectedVerion=stat2.executeQuery();
+				
+				while(rsTicketsWITHaffectedVerion.next() && count<movWindow) {
+					
+					p=p+(rsTicketsWITHaffectedVerion.getInt("ProportionValue"));
+					
+					count=count+1;
+				}//while
+				
+			}//try
+			
+			if(count==0) {
+				
+				return;
 			}
-			p=p/movWindow;
+			
+			p=p/count;
+			
 			injectedV=proportion1.calculateIV(p, fixV, openV);
+			var dataAffVer=getDateFromVersionIndex(injectedV);
+			
 			count=0;
+			p=0;
+			var queryUpdate="UPDATE \"Tickect_FV_OV\"  "
+	                   +" SET  \"ProportionValue\" ="+p+", "
+	                   +"      \"AffectedVersion\"= "+injectedV+", "
+	                   +"      \"DateAffectedVersion\" = '"+dataAffVer+"'  "
+			           +" WHERE \"TicketBugID\" =  '"+ticketID +"'  ";
 			
-			String queryUpdate="UPDATE Tickect_FV_OV"+
-	                   "SET  \"ProportionValue\" ="+p+", \"AffectedVersion\"= "+injectedV+
-			           "WHERE \"TicketBugID\"=  '"+ticketID +"'";
+			try(var statUpdate=con.prepareStatement(queryUpdate)){
+			    statUpdate.executeUpdate();
+			}//try
 			
-			try(PreparedStatement statUpdate=con.prepareStatement(queryUpdate)){
-		    statUpdate.executeUpdate();
-			}
 		}//while
 		
+	}//try
+	     	
 		
-	}
+}//fine metodo
 	
 	public void calculatePTicketsWithAffectedVersion() throws SQLException, IOException {
 		
 		ResultSet rs;
 		String ticketID;
+		String dataVersion;
 		
-		Proportion prop=new Proportion();
-		int p;
+		var prop=new Proportion();
+		Double p;
 		
-		String query="SELECT * FROM \"Tickect_FV_OV\" as t_FV_OV " + 
+		var query="SELECT * FROM \"Tickect_FV_OV\" as t_FV_OV " + 
 				 
 				"JOIN \"TicketWithAffectedVersion\" AS twAV " + 
-				"ON   t_FV_OV.\"TicketBugID\" = twAV.\"TicketBugID\" ";
+				"ON   t_FV_OV.\"TicketBugID\" = twAV.\"TicketBugID\" "+
+			    "JOIN \"ZookeeperVersionsInfo\" AS zk  "+
+			    "ON  zk.\"DateVersion\" = twAV.\"VersionDate\" ";
 		
 		var queryUpdate="";
+		var queryUpdate2="";
 		
 		Connection con;
 		db=new DB();
 		con=db.connectToDBtickectBugZookeeper();
 		
 			
-	try(PreparedStatement stat=con.prepareStatement(query) ){
+	try(var stat=con.prepareStatement(query) ){
 		rs=stat.executeQuery();
-	}
+	
 	
 		while( rs.next() ) {
 			ticketID=rs.getString("TicketBugID");
 			fixV=rs.getInt("FV");
 			openV=rs.getInt("OP");
-			injectedV=rs.getInt("AffectedVersion");
+			injectedV=rs.getInt("Index");
+			dataVersion=rs.getString("VersionDate");
+			
 			p=prop.calculateP(fixV, openV, injectedV);
 			
-			queryUpdate="UPDATE \"TicketWithAffectedVersion\" " + 
-					"SET \"ProportionValue\"= " +p+ 
-					"WHERE \"TicketBugID\"=  '"+ticketID +"'";
+			if(p<=0) {
+				continue;
+			}
 			
-			try(PreparedStatement statUpdate=con.prepareStatement(queryUpdate)){
+			queryUpdate="UPDATE \"TicketWithAffectedVersion\" "+ 
+					" SET \"ProportionValue\"= "+p+ 
+					" WHERE \"TicketBugID\"=  '"+ticketID +"'";
+						
+			try(var statUpdate=con.prepareStatement(queryUpdate)){
 			    statUpdate.executeUpdate();
-			}    
+			}  
+			
+			queryUpdate2="UPDATE \"Tickect_FV_OV\" "+ 
+					"  SET \"ProportionValue\" = "+p+" , " +
+					"      \"DateAffectedVersion\" = '"+dataVersion+"' , "+
+					"      \"AffectedVersion\" = '"+injectedV+"'   "+
+					"  WHERE \"TicketBugID\" =  '"+ticketID +"'";
+			try(var statUpdate2=con.prepareStatement(queryUpdate2)){
+			    statUpdate2.executeUpdate();
+			} 
+			
 		}//while
+	}//try	
 		
+	                
+	
+}//fine metodo
+	
+	
+	public String getDateFromVersionIndex(int indexVersion) throws SQLException, IOException {
 		
-	}
+		ResultSet rs;
+		var data = "*";
+		var queryDate="SELECT * FROM \"ZookeeperVersionsInfo\"  "
+                +"WHERE \"Index\" = "+indexVersion+"  " ; 				 	                  
+         
+		Connection con;
+		db=new DB();
+		con=db.connectToDBtickectBugZookeeper();
+		
+		try(var stat=con.prepareStatement(queryDate) ){
+			rs=stat.executeQuery();
+			
+			while(rs.next()) {
+			  data=rs.getString("DateVersion");	
+			}
+					
+			
+		}		
+
+		con.close();
+		return data;
+				
+	}//fine metodo
+	
+	
 }

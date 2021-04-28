@@ -29,6 +29,7 @@ public class CHGSETSIZEmetric {
 		var db=new DB();
 		var conn=db.connectToDBtickectBugZookeeper();
 		
+		
 		var query=" SELECT \"Commit\", COUNT(\"Commit\")  "+
 				  "FROM \"ListJavaClasses\"  "+
 				  "GROUP BY \"Commit\" ";
@@ -64,7 +65,8 @@ public class CHGSETSIZEmetric {
 	
 	
 	public void claculateMaxAndAvgChgSetSize() throws SQLException, IOException {
-		var h2=new Help2();
+		var help2=new Help2();
+		
 		var chgSetSizeMax=0;
 		var chgSetSizeAvg=0;
 		var chgSetSize=0;
@@ -82,8 +84,7 @@ public class CHGSETSIZEmetric {
 				  "WHERE \"NameClass\" like '%.java'  "+
 				  "GROUP BY \"NameClass\"   ";			
 				      
-		
-		
+			
 		try(var stat=conn.prepareStatement(query) ){
 		  rsOccorrenzeFiles=stat.executeQuery();
 		
@@ -109,8 +110,8 @@ public class CHGSETSIZEmetric {
 				   
 				  chgSetSizes.add(chgSetSize);
 				  
-				  chgSetSizeMax=h2.findMax(chgSetSizes);
-				  chgSetSizeAvg=h2.findAvg(chgSetSizes);
+				  chgSetSizeMax=help2.findMax(chgSetSizes);
+				  chgSetSizeAvg=help2.findAvg(chgSetSizes);
 				  
 				  var queryUpd="UPDATE \"ListJavaClasses\" "+
 				                "SET \"MaxChgSetSize\"="+chgSetSizeMax+" , "+
@@ -118,9 +119,10 @@ public class CHGSETSIZEmetric {
 						        "WHERE  \"NameClass\"='"+fileName+"'  AND "+
 						        "       \"Commit\"='"+commit+"' ";
 				  
+				  
 				  try(var statUpd=conn.prepareStatement(queryUpd) ){
 					   statUpd.executeUpdate();
-				  }
+				  }//try
 				  
 			    }//while interno
 			 }//try

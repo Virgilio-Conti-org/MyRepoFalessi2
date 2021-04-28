@@ -31,24 +31,23 @@ public class CHURNmetric {
 		var buffSplitHasRightLenght=false; 
 		
 		var cmdgitShow=new  CommandGitShow();
-	
 		
 		var db=new DB();
 		var conn=db.connectToDBtickectBugZookeeper();
-		ResultSet rs;
 		
-		var query="SELECT * FROM \"ListJavaClasses\" "
-				+ " WHERE \"NameClass\" LIKE '%.java' ";
-			
+		ResultSet rsChurn;
 		
-		try(var stat=conn.prepareStatement(query) ){
-			rs=stat.executeQuery();
+		var queryClasses="SELECT * FROM \"ListJavaClasses\" "
+				      + " WHERE \"NameClass\" LIKE '%.java' ";
+					
+		try(var stat=conn.prepareStatement(queryClasses) ){
+			rsChurn=stat.executeQuery();
 		
 				
-        while( rs.next() ) {
+        while( rsChurn.next() ) {
         	
-			var fileName=rs.getString("NameClass");
-		    var commit = rs.getString("Commit");
+			var fileName=rsChurn.getString("NameClass");
+		    var commit = rsChurn.getString("Commit");
 		    
 		    listFiles=cmdgitShow.commandGitShow(commit);		    
 			var size=listFiles.size();
@@ -81,12 +80,12 @@ public class CHURNmetric {
 					
 				
 					
-					var queryUpd="UPDATE \"ListJavaClasses\"  "+
+					var queryUpdChurn="UPDATE \"ListJavaClasses\"  "+
 			                   "SET  \"Churn\"= "+churn+
 					          " WHERE \"NameClass\"= '"+fileName +"'" +" AND "+
 					           		 " \"Commit\"= '"+commit+"'   " ;
 					
-					try(var statUpd=conn.prepareStatement(queryUpd)){
+					try(var statUpd=conn.prepareStatement(queryUpdChurn)){
 						statUpd.executeUpdate();
 					}
 					
@@ -113,56 +112,57 @@ public class CHURNmetric {
 		var churn=0;
 		List<Integer> churnSizes=new ArrayList<>();
 				
-		
 		ResultSet rsOccorrenzeFiles;
-		ResultSet rsDataForCalculation;
+		ResultSet rsDataForCalculationChurn;
 		
 		var db=new DB();
 		var conn=db.connectToDBtickectBugZookeeper();
 		
-		var query="SELECT \"NameClass\",COUNT(\"NameClass\") "+
+		var query1="SELECT \"NameClass\",COUNT(\"NameClass\") "+
 				  "FROM \"ListJavaClasses\"  "+
 				  "WHERE \"NameClass\" like '%.java'  "+
 				  "GROUP BY \"NameClass\"   ";			
 				      
 		
 		
-		try(var stat=conn.prepareStatement(query) ){
+		try(var stat=conn.prepareStatement(query1) ){
 		  rsOccorrenzeFiles=stat.executeQuery();
 		
 		  		
           while( rsOccorrenzeFiles.next() ) {
                     	      	  
-			 var fileName=rsOccorrenzeFiles.getString("NameClass");
+			 var nomeFile=rsOccorrenzeFiles.getString("NameClass");
 			 
 			
 			 var query2=" SELECT * "+
 			 	   " FROM \"ListJavaClasses\"  "+
-			 	   " WHERE \"NameClass\" = '"+fileName+"'    "+
+			 	   " WHERE \"NameClass\" = '"+nomeFile+"'    "+
 			 	   " ORDER BY \"NameClass\" , \"DataCommit\"  ASC ";
 			 		
+			 
 			 try(var stat2=conn.prepareStatement(query2) ){
-			   rsDataForCalculation=stat2.executeQuery();
+			   rsDataForCalculationChurn=stat2.executeQuery();
 			   		   
 			   
-			   while(rsDataForCalculation.next()) {
+			   while(rsDataForCalculationChurn.next()) {
 				   
-				  var commit=rsDataForCalculation.getString("Commit");
-				  churn=rsDataForCalculation.getInt("Churn");  
+				  var commit=rsDataForCalculationChurn.getString("Commit");
+				  churn=rsDataForCalculationChurn.getInt("Churn");  
 				   
 				  churnSizes.add(churn);
 				  
 				  churnMax=h2.findMax(churnSizes);
 				  churnAvg=h2.findAvg(churnSizes);
 				  
-				  var queryUpd="UPDATE \"ListJavaClasses\" "+
+				  var queryUpdate="UPDATE \"ListJavaClasses\" "+
 				                "SET \"MaxChurn\"="+churnMax+" , "+
 						        "    \"AvgChurn\"="+churnAvg+"  "+
-						        "WHERE  \"NameClass\"='"+fileName+"'  AND "+
+						        "WHERE  \"NameClass\"='"+nomeFile+"'  AND "+
 						        "       \"Commit\"='"+commit+"' ";
 				  
-				  try(var statUpd=conn.prepareStatement(queryUpd) ){
-					   statUpd.executeUpdate();
+				  try(var statUpdate=conn.prepareStatement(queryUpdate) ){
+					  
+					   statUpdate.executeUpdate();
 				  }
 				  
 			    }//while interno
