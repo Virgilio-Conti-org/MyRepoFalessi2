@@ -21,16 +21,16 @@ public class CHURNmetric {
     
 	public void calculateChurn() throws IOException, InterruptedException, SQLException {
 		
-		List<String> listFiles=new ArrayList<>();
-		String[] bufferSplit;		
+		List<String> listaFile=new ArrayList<>();
+		String[] bufSplit;		
 		var locAdded="/";
 		var locDeleted="/";
 		var churn=0;
 	
-		var foundFile=false;
-		var buffSplitHasRightLenght=false; 
+		var fileTrovato=false;
+		var buffSplitLenghtOK=false; 
 		
-		var cmdgitShow=new  CommandGitShow();
+		var comGitShow=new  CommandGitShow();
 		
 		var db=new DB();
 		var conn=db.connectToDBtickectBugZookeeper();
@@ -49,37 +49,33 @@ public class CHURNmetric {
 			var fileName=rsChurn.getString("NameClass");
 		    var commit = rsChurn.getString("Commit");
 		    
-		    listFiles=cmdgitShow.commandGitShow(commit);		    
-			var size=listFiles.size();
+		    listaFile=comGitShow.commandGitShow(commit);		    
+			var sizeList=listaFile.size();
 			
 			
-			for(var i=(size-1);i>=0;i--) {
+			for(var j=(sizeList-1);j>=0;j--) {
 				
 				
-				if(listFiles.get(i).contains(fileName)) {
-					foundFile=true;
+				if(listaFile.get(j).contains(fileName)) {
+					fileTrovato = true;
 				}
 				
-				bufferSplit=listFiles.get(i).split("\t");
+				bufSplit = listaFile.get(j).split("\t");
 				
-				if((bufferSplit.length) ==3 ) {
-					buffSplitHasRightLenght=true;
+				if( (bufSplit.length) == 3 ) {
+				  buffSplitLenghtOK = true;
 				}
-				if(foundFile && buffSplitHasRightLenght) {
-					bufferSplit=listFiles.get(i).split("\t");
-					
-					
-					locAdded=bufferSplit[0];
-					locDeleted=bufferSplit[1];
-					
-					
+				if(  fileTrovato && buffSplitLenghtOK ) {
+				  bufSplit = listaFile.get(j).split("\t");
+										
+					locAdded=bufSplit[0];
+					locDeleted=bufSplit[1];
+										
 					locAdded=specialCaseChurnValuselocAdded(locAdded);
 					locDeleted=specialCaseChurnValuselocDeleted(locDeleted);
 					
 					churn=Integer.parseInt(locAdded)-Integer.parseInt(locDeleted);
-					
-				
-					
+									
 					var queryUpdChurn="UPDATE \"ListJavaClasses\"  "+
 			                   "SET  \"Churn\"= "+churn+
 					          " WHERE \"NameClass\"= '"+fileName +"'" +" AND "+
@@ -89,8 +85,8 @@ public class CHURNmetric {
 						statUpd.executeUpdate();
 					}
 					
-					foundFile=false;
-					buffSplitHasRightLenght=false;
+					fileTrovato=false;
+					buffSplitLenghtOK=false;
 					break;
 				}//if
 				
