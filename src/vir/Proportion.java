@@ -23,9 +23,7 @@ public class Proportion {
 		
 	//intero che conterrà il valore proportion calcolato
 		double p; 
-		//double doubleFv=(double)fv;
-		
-		
+			
 		if(fv==ov) {
 			p=1.0;
 			return p;
@@ -36,8 +34,9 @@ public class Proportion {
 			return p;
 		}
 		
+		double dbFV=(double) fv;
 		//formula per il calcolo del valore proportion
-		p=(fv-iv)/(fv-ov);
+		p=(dbFV-iv)/(fv-ov);
 		
 		return p;
 		
